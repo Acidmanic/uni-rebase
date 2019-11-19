@@ -28,7 +28,13 @@ public class GitService {
         
         this.repoGitDirectory= this.repoDirectory.toPath().resolve(".git").toFile();
 
-        this.git = Git.open(this.repoGitDirectory);
+        if(this.repoGitDirectory.exists()){
+            this.git = Git.open(this.repoGitDirectory);    
+        }else{
+            this.init();
+        }
+
+        
 
     }
 
@@ -86,5 +92,15 @@ public class GitService {
 
     public File getRootDirectory(){
         return this.repoDirectory;
+    }
+
+
+    public boolean isRepo(){
+        try {
+            this.git.status().call();
+            return true;
+        } catch (Exception e) {}
+
+        return false;
     }
 }

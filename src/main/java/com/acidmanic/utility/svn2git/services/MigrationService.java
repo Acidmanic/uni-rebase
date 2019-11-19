@@ -24,14 +24,16 @@ public class MigrationService {
     public void migrate(String svnPath,String gitPath) throws Exception {
         
 
-        GitService gitService = new GitService(gitPath);
+        GitService gitService =  new GitService(gitPath);
 
         SvnService svnService = new SvnService(svnPath);
 
         migrate(svnService, gitService);
     }
 
-    public void migrate(String svnPath,String gitPath,String svnUsername, String svnPassword) throws Exception {
+  
+
+    public void migrate(String svnPath, String gitPath, String svnUsername, String svnPassword) throws Exception {
         
 
         GitService gitService = new GitService(gitPath);
