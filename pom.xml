@@ -14,5 +14,24 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/org.tmatesoft.svnkit/svnkit -->
+    <dependency>
+      <groupId>org.tmatesoft.svnkit</groupId>
+      <artifactId>svnkit</artifactId>
+      <version>1.8.5</version>
+    </dependency>
+
+
+
+
+    <!-- https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit -->
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <version>5.5.1.201910021850-r</version>
+    </dependency>
+
   </dependencies>
 </project>
