@@ -1,5 +1,6 @@
 package com.acidmanic.utility.playgrounds;
 
+import com.acidmanic.utility.svn2git.services.AuthorsListFile;
 import com.acidmanic.utility.svn2git.services.MigrationService;
 
 public class RepoConvertTest {
@@ -10,9 +11,12 @@ public class RepoConvertTest {
 
         String svn = "C:\\Users\\80116\\Documents\\RSB-ELECTRON";
         String git = "C:\\Users\\80116\\Documents\\rsb-elec-git";
+        String authorsFile = "C:\\Users\\80116\\Documents\\svn-authors.txt";
+
+
+        AuthorsListFile authors = AuthorsListFile.load(authorsFile);
 
         MigrationService migrationService = new MigrationService();
-
 
         migrationService.migrate(svn, git,"moayedi","Aa12345*");
 
