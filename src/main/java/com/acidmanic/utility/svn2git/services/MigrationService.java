@@ -13,17 +13,12 @@ import com.acidmanic.utility.svn2git.models.CommitData;
 import com.acidmanic.utility.svn2git.models.MigrationConfig;
 import com.acidmanic.utility.svn2git.models.SCId;
 
-import org.tmatesoft.svn.core.SVNLogEntry;
-
 public class MigrationService {
 
 
 
 
     private final List<String> IGNORELIST;
-
-    private final CommitConvertor<SVNLogEntry> commitConvertor 
-                = new SvnLogEntryCommitConvertor("acidmanic.com");
 
     private final MigrationConfig migrationConfig;
 
@@ -82,67 +77,38 @@ public class MigrationService {
 
     private void migrate(SvnService svn, GitService git, SCId fromId) throws Exception {
 
-        ArrayList<SVNLogEntry> allEntries =  svn.listAllCommits();
+        ArrayList<CommitData> allEntries =  svn.listAllCommits();
 
-        allEntries.sort(new Comparator<SVNLogEntry>() {
-
-            @Override
-            public int compare(SVNLogEntry o1, SVNLogEntry o2) {
-                return (int) (o1.getRevision() - o2.getRevision());
-            }
-        });
+        HistoryHelper.sort(allEntries);
         
-
-        int index = skipToIndex(allEntries,fromId);
+        int index =  HistoryHelper.skipToIndex(allEntries,fromId);
 
         for(int i=index;i<allEntries.size();i++){
             
-            SVNLogEntry entry = allEntries.get(i);
+            CommitData entry = allEntries.get(i);
 
            migrate(svn,git,entry);
         }
     }
 
-    private int skipToIndex(ArrayList<SVNLogEntry> allEntries, SCId fromId) {
+    private void migrate(SvnService svn, GitService git, CommitData commit) throws Exception {
 
-        if(fromId.isFirst()) return 0;
+        SCId id = commit.getIdentifier();
 
-        for(int i=0;i<allEntries.size();i++){
-            if(allEntries.get(i).getRevision() == fromId.getSvnRevision()){
-                return i+1;
-            }
-        }
-
-        return allEntries.size();
-    }
-
-    private void migrate(SvnService svn, GitService git, SVNLogEntry entry) throws Exception {
-
-        if(entry.getRevision() ==0 ){
+        if(id.getType()==SCId.SCID_TYPE_SVN && id.getSvnRevision() ==0 ){
             System.out.println("Wrn: skipped revision 0 (non-existing)");
             return;
         }
 
-        long revision = entry.getRevision();
-
-        svn.updateToRevision(revision);
-        
-        
-
-        
-
-        
-
+        svn.recallProjectState(id);
+       
         git.addAll();
-
-        CommitData commit = this.commitConvertor.convert(entry);
 
         commit = migrationConfig.getCommitRefiner().refine(commit);
 
         formatMessage(commit);
         
         git.commit(commit);
-
     }
 
     private void formatMessage(CommitData commit) {

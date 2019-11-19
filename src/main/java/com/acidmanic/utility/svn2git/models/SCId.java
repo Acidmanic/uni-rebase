@@ -114,4 +114,30 @@ public class SCId{
         return this.first;
     }
 
+
+
+    public String getGitShortHash(){
+        return this.id.substring(0, MINIMUM_GIT_HASH_LENGTH);
+    }
+
+    public boolean equals(SCId id){
+        
+        if (id==null) return false;
+        
+        if(this.first && id.first) return true;
+
+        if(this.type!=id.type) return false;
+
+        if(this.type == SCID_TYPE_GIT){
+            return this.getGitShortHash().equals(id.getGitShortHash());
+        }
+
+        if(type == SCID_TYPE_SVN){
+            return this.getSvnRevision() == id.getSvnRevision();
+        }
+
+        return this.id.equals(id.id);
+
+    }
+
 }

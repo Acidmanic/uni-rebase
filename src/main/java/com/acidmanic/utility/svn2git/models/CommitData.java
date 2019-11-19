@@ -13,7 +13,7 @@ public class CommitData{
 
     private Date date;
 
-    private String identifier;
+    private SCId identifier;
 
     public String getMessage() {
         return message;
@@ -47,11 +47,11 @@ public class CommitData{
         this.date = date;
     }
 
-    public String getIdentifier() {
+    public SCId getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(SCId identifier) {
         this.identifier = identifier;
     }
 
