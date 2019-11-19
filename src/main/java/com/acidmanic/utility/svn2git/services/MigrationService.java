@@ -97,8 +97,17 @@ public class MigrationService {
 
         commit = migrationConfig.getCommitRefiner().refine(commit);
 
+        formatMessage(commit);
+        
         git.commit(commit);
 
+    }
+
+    private void formatMessage(CommitData commit) {
+        
+        String message = this.migrationConfig.getCommitMessageFormatter().format(commit);
+        
+        commit.setMessage(message);
     }
 
     public MigrationService() {

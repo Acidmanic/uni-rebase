@@ -6,11 +6,13 @@ import java.util.List;
 
 import com.acidmanic.utility.svn2git.models.CommitData;
 
-public class StringCommitMessageFormatter {
+public class StringCommitMessageFormatter implements CommitMessageFormatter{
 
 
     private static final List<CommitFormatPropertyRetriver> formatters = listFormatters();
 
+
+    private String format ="{{MESSAGE}}";
 
     private static List<CommitFormatPropertyRetriver> listFormatters(){
         
@@ -61,4 +63,24 @@ public class StringCommitMessageFormatter {
 
         return ret;
     }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public StringCommitMessageFormatter(String format) {
+        this.format = format;
+    }
+
+    @Override
+    public String format(CommitData commit) {
+        return this.format(format,commit);
+    }
+
+    
+    
 }
