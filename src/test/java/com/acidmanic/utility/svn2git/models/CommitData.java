@@ -1,5 +1,6 @@
 package com.acidmanic.utility.svn2git.models;
 
+import java.util.Date;
 
 public class CommitData{
 
@@ -9,6 +10,8 @@ public class CommitData{
     private String authorName;
 
     private String authorEmail;
+
+    private Date date;
 
     public String getMessage() {
         return message;
@@ -34,6 +37,13 @@ public class CommitData{
         this.authorEmail = authorEmail;
     }
 
-    
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 
 }

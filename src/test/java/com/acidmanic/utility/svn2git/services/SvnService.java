@@ -95,13 +95,14 @@ public class SvnService {
         return ret;
 
     }
+
     
+    public File getRootDirectory(){
+        return this.repoFile;
+    }
 
     public void dispose(){
 
-
         repositoryPool.shutdownConnections(true);
-
-
     }
 }

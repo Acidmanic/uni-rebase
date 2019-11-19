@@ -1,8 +1,13 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
+import java.util.Date;
+import java.util.TimeZone;
+
+import com.acidmanic.utility.svn2git.models.CommitData;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.PersonIdent;
 
 
 public class GitService {
@@ -49,13 +54,37 @@ public class GitService {
     }
 
     public void commit(String message) throws Exception {
-        this.git.commit().setMessage(message).call();
+        this.git.commit()
+            .setMessage(message)
+            .call();
     }
 
+
+    public void commit(CommitData commit) throws Exception {
+
+
+        PersonIdent committer = new PersonIdent(
+            commit.getAuthorName()
+            ,commit.getAuthorEmail()
+            ,commit.getDate()
+            ,TimeZone.getDefault()
+        );
+    
+        this.git.commit()
+            .setMessage(commit.getMessage())
+            .setCommitter(committer)
+            .setAuthor(committer)
+            .call();
+    }
 
     public void init() throws Exception {
         Git.init().setDirectory(this.repoDirectory).call();
 
         this.git = Git.open(this.repoGitDirectory);
+    }
+
+
+    public File getRootDirectory(){
+        return this.repoDirectory;
     }
 }
