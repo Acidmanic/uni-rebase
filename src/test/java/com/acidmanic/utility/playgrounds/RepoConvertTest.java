@@ -11,8 +11,8 @@ public class RepoConvertTest {
     public static void main(String[] args) throws Exception {
         
 
-        String svn = "C:\\Users\\80116\\Documents\\RSB-ELECTRON";
-        String git = "C:\\Users\\80116\\Documents\\rsb-elec-git";
+        String svn = "C:\\Users\\80116\\Documents\\RSB-BACKEND";
+        String git = "C:\\Users\\80116\\Documents\\rsb-backend-git";
         String authorsFile = "C:\\Users\\80116\\Documents\\svn-authors.txt";
 
 

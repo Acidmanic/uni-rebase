@@ -13,6 +13,8 @@ public class CommitData{
 
     private Date date;
 
+    private String identifier;
+
     public String getMessage() {
         return message;
     }
@@ -45,5 +47,12 @@ public class CommitData{
         this.date = date;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
 }
