@@ -87,14 +87,5 @@ public class SvnClientUpdateTest {
     private static void clearSVNDirectory(File repoFile) {
     }
 
-    private static int count = 0;
-
-    private static void log(SVNLogEntry logEntry){
-        System.out.println("----- " + logEntry.getAuthor() 
-        + " - " + logEntry.getRevision() 
-        + " - " + logEntry.getDate().toString()
-        + " - " + logEntry.getMessage());
-
-        count +=1;
-    }
+  
 }
