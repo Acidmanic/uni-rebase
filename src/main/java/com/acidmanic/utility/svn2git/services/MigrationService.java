@@ -67,6 +67,11 @@ public class MigrationService {
 
     private void migrate(SvnService svn, GitService git, SVNLogEntry entry) throws Exception {
 
+        if(entry.getRevision() ==0 ){
+            System.out.println("Wrn: skipped revision 0 (non-existing)");
+            return;
+        }
+
         long revision = entry.getRevision();
 
         svn.updateToRevision(revision);

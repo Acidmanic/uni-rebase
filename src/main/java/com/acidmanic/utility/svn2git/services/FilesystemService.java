@@ -42,6 +42,8 @@ public class FilesystemService {
 
             File newBase = dst.toPath().resolve(file.getName()).toFile();
 
+            newBase.mkdirs();
+            
             for(File sub:subs) copyInto(sub, newBase);
         }
 

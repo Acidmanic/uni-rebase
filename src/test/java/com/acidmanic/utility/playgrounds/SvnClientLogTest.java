@@ -27,6 +27,8 @@ public class SvnClientLogTest {
 
                 File repoFile = new File("C:\\Users\\80116\\Desktop\\RSB-BACKEND");
 
+                repoFile = new File("C:\\Users\\80116\\Documents\\RSB-ELECTRON");
+
                 if(repoFile.exists()){
                     System.out.println("Repository checked and exists.");
                 }
