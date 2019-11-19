@@ -36,18 +36,22 @@ public class FilesystemService {
 
 
         if(!file.isDirectory()){
-            Files.copy(file.toPath(), dst.toPath().resolve(file.getName()), StandardCopyOption.COPY_ATTRIBUTES);
-        }else{
+            copySingleFileToDirectory(file, dst);
+        } else {
             File[] subs = file.listFiles();
 
             File newBase = dst.toPath().resolve(file.getName()).toFile();
 
             newBase.mkdirs();
-            
-            for(File sub:subs) copyInto(sub, newBase);
+
+            for (File sub : subs)
+                copyInto(sub, newBase);
         }
 
-        
+    }
+
+    private void copySingleFileToDirectory(File file, File dstDir) throws Exception {
+        Files.copy(file.toPath(), dstDir.toPath().resolve(file.getName()), StandardCopyOption.COPY_ATTRIBUTES);
     }
 
     private List<String> normalize(List<String> ignoreList) {
@@ -84,11 +88,49 @@ public class FilesystemService {
 
             for(File f : files) deleteAway(f);
 
-        }else{
-            file.delete();
         }
+        
+        file.delete();
     }
 
+
+    public void deleteContent(File dir, String[] ignoreList ){
+        File[] subs = dir.listFiles();
+
+        for(File sub:subs){
+            if(!isIgnored(sub.getName(), ignoreList)){
+                deleteAway(sub);
+            }
+        }
+    }
    
+    private boolean isIgnored(String name,String[] ignoreList){
+        for(String item:ignoreList)
+            if(item.compareTo(name)==0) return true;
+
+        return false;
+    }
+
+	public void moveContent(File src, File dst) throws Exception {
+
+        File[] files = src.listFiles();
+
+        for(File sFile:files){
+
+            File dFile = dst.toPath().resolve(sFile.getName()).toFile();
+
+            if(sFile.isDirectory()){
+
+                dFile.mkdirs();
+
+                moveContent(sFile, dFile);
+            }else{
+                copySingleFileToDirectory(sFile,dst);
+            }
+
+            deleteAway(sFile);
+        }
+
+	}
 
 }

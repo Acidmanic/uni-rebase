@@ -1,6 +1,8 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,11 +47,34 @@ public class MigrationService {
     public void migrate(String svnPath, String gitPath, String svnUsername, String svnPassword) throws Exception {
         
 
-        GitService gitService = new GitService(gitPath);
+        File srcSvnRepo = new File(svnPath);
 
-        SvnService svnService = new SvnService(svnPath,svnUsername,svnPassword);
+        File srcDotSvnDir = srcSvnRepo.toPath().resolve(".svn").toFile();
+
+        File migrationDirectory = new File(gitPath);// destination
+
+        File migrationDotSvn = migrationDirectory.toPath().resolve(".svn").toFile();
+        
+        if(!migrationDotSvn.exists()) migrationDotSvn.mkdirs();
+        
+        FilesystemService fs = new FilesystemService();
+
+        fs.syncInto(srcDotSvnDir, migrationDotSvn, new ArrayList<>());
+
+        File gitMigrationDirectory = migrationDirectory.toPath().resolve(this.migrationConfig.getGitMasterSvnDirectory()).toFile();
+
+        GitService gitService = new GitService(gitMigrationDirectory);
+
+        SvnService svnService = new SvnService(migrationDirectory,svnUsername,svnPassword);
 
         migrate(svnService, gitService);
+
+        fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getGitMasterSvnDirectory()});
+
+        fs.moveContent(gitMigrationDirectory,migrationDirectory);
+
+        fs.deleteAway(gitMigrationDirectory);
+        
     }
 
 
@@ -57,6 +82,8 @@ public class MigrationService {
     private void migrate(SvnService svn, GitService git) throws Exception {
 
         ArrayList<SVNLogEntry> allEntries =  svn.listAllCommits();
+
+        
 
         allEntries.sort(new Comparator<SVNLogEntry>() {
 
@@ -85,11 +112,11 @@ public class MigrationService {
 
         svn.updateToRevision(revision);
         
-        FilesystemService fs = new FilesystemService();
+        
 
-        File sources = svn.getRootDirectory().toPath().resolve(migrationConfig.getGitMasterSvnDirectory()).toFile();
+        
 
-        fs.syncInto(sources, git.getRootDirectory(), this.IGNORELIST);
+        
 
         git.addAll();
 
