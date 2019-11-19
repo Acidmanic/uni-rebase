@@ -12,9 +12,9 @@ public interface SourceControlService {
 
 
 
-    void recallProjectState(SCId id);
+    void recallProjectState(SCId id) throws Exception;
 
-    ArrayList<CommitData> listAllCommits();
+    ArrayList<CommitData> listAllCommits() throws Exception;
 
     public File getRootDirectory();
 
@@ -26,7 +26,7 @@ public interface SourceControlService {
 
     public void acceptAllChanges(CommitData commit) throws Exception;
 
-    public void initialize();
+    public void initialize() throws Exception;
 
     public boolean isRepo();
 

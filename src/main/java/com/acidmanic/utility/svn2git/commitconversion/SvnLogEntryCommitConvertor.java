@@ -7,13 +7,12 @@ import org.tmatesoft.svn.core.SVNLogEntry;
 public class SvnLogEntryCommitConvertor implements CommitConvertor<SVNLogEntry>{
 
 
-    private String companyDomain="localhost";
 
     @Override
     public CommitData convert(SVNLogEntry entry) {
         CommitData commit = new CommitData();
 
-        commit.setAuthorEmail(entry.getAuthor() + "@"+this.companyDomain);
+        commit.setAuthorEmail("");
 
         commit.setAuthorName(entry.getAuthor());
 
@@ -26,23 +25,9 @@ public class SvnLogEntryCommitConvertor implements CommitConvertor<SVNLogEntry>{
         return commit;
     }
 
-    public SvnLogEntryCommitConvertor(String companyDomain) {
-        this.companyDomain = companyDomain;
-    }
+  
 
     public SvnLogEntryCommitConvertor() {
     }
-
-    public String getCompanyDomain() {
-        return companyDomain;
-    }
-
-    public void setCompanyDomain(String companyDomain) {
-        this.companyDomain = companyDomain;
-    }
-
-    
-
-
 
 }
