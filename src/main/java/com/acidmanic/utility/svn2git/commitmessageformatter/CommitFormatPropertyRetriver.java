@@ -16,7 +16,7 @@ public interface CommitFormatPropertyRetriver {
         = new GenericCommitFormatPrpertyRetriver("{{AUTHOR}}", (CommitData d) -> d.getAuthorName());
 
     public static final CommitFormatPropertyRetriver CommitAuthorEmail 
-        = new GenericCommitFormatPrpertyRetriver("{{AUTHOR}}", (CommitData d) -> d.getAuthorEmail());
+        = new GenericCommitFormatPrpertyRetriver("{{EMAIL}}", (CommitData d) -> d.getAuthorEmail());
 
 
     public static final CommitFormatPropertyRetriver CommitIdentifer 

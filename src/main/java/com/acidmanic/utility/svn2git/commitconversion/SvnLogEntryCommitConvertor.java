@@ -21,6 +21,8 @@ public class SvnLogEntryCommitConvertor implements CommitConvertor<SVNLogEntry>{
 
         commit.setMessage(entry.getMessage());
 
+        commit.setIdentifier(String.format("%d", entry.getRevision()));
+
         return commit;
     }
 

@@ -13,12 +13,14 @@ class GenericCommitFormatPrpertyRetriver implements CommitFormatPropertyRetriver
     protected Function<CommitData,String> retrive;
 
 
-    
-
     @Override
     public String process(String inputString, CommitData data) {
         
-        String ret = inputString.replace(propertyTag, this.retrive.apply(data));
+        String value = this.retrive.apply(data);
+
+        if (value==null) value = "";
+
+        String ret = inputString.replace(propertyTag, value);
 
         return ret;
     }
