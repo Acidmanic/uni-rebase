@@ -1,7 +1,6 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -22,10 +21,13 @@ public class FilesystemService {
     }
 
     private void copyRepoContent(File src, File dst, List<String> ignoreList) throws Exception {
+        
         File[] files = src.listFiles();
 
         for (File file : files) {
+
             if (!ignoreList.contains(file.getName().toLowerCase())) {
+
                 copyInto(file, dst);
 
             }
@@ -36,7 +38,9 @@ public class FilesystemService {
 
 
         if(!file.isDirectory()){
+
             copySingleFileToDirectory(file, dst);
+
         } else {
             File[] subs = file.listFiles();
 
@@ -51,18 +55,25 @@ public class FilesystemService {
     }
 
     private void copySingleFileToDirectory(File file, File dstDir) throws Exception {
+
         Files.copy(file.toPath(), dstDir.toPath().resolve(file.getName()), StandardCopyOption.COPY_ATTRIBUTES);
     }
 
     private List<String> normalize(List<String> ignoreList) {
+
         List<String> ret = new ArrayList<>();
 
         for(String item : ignoreList){
+
             item = item.replace("\\", "/");
+
             item = item.toLowerCase();
+
             if(item.startsWith("./")){
+
                 item= item.substring(2, item.length());
             }
+
             ret.add(item);
         }
 
@@ -74,7 +85,9 @@ public class FilesystemService {
         File[] files = dst.listFiles();
 
         for(File file: files){
+
             if(!ignoreList.contains(file.getName().toLowerCase())){
+
                 deleteAway(file);
             }
         }
@@ -82,6 +95,7 @@ public class FilesystemService {
     }
 
     public void deleteAway(File file) {
+
         if( file.isDirectory()){
             
             File[] files = file.listFiles();
@@ -99,13 +113,16 @@ public class FilesystemService {
 
         for(File sub:subs){
             if(!isIgnored(sub.getName(), ignoreList)){
+
                 deleteAway(sub);
             }
         }
     }
    
     private boolean isIgnored(String name,String[] ignoreList){
+
         for(String item:ignoreList)
+
             if(item.compareTo(name)==0) return true;
 
         return false;

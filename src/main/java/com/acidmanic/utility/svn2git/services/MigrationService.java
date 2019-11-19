@@ -11,6 +11,7 @@ import com.acidmanic.utility.svn2git.commitconversion.CommitConvertor;
 import com.acidmanic.utility.svn2git.commitconversion.SvnLogEntryCommitConvertor;
 import com.acidmanic.utility.svn2git.models.CommitData;
 import com.acidmanic.utility.svn2git.models.MigrationConfig;
+import com.acidmanic.utility.svn2git.models.SCId;
 
 import org.tmatesoft.svn.core.SVNLogEntry;
 
@@ -32,19 +33,19 @@ public class MigrationService {
 
 
 
-    public void migrate(String svnPath,String gitPath) throws Exception {
+    public void migrate(String svnPath,String gitPath, SCId fromId) throws Exception {
         
 
         GitService gitService =  new GitService(gitPath);
 
         SvnService svnService = new SvnService(svnPath);
 
-        migrate(svnService, gitService);
+        migrate(svnService, gitService, fromId);
     }
 
   
 
-    public void migrate(String svnPath, String gitPath, String svnUsername, String svnPassword) throws Exception {
+    public void migrate(String svnPath, String gitPath, SCId fromId, String svnUsername, String svnPassword) throws Exception {
         
 
         File srcSvnRepo = new File(svnPath);
@@ -67,7 +68,7 @@ public class MigrationService {
 
         SvnService svnService = new SvnService(migrationDirectory,svnUsername,svnPassword);
 
-        migrate(svnService, gitService);
+        migrate(svnService, gitService, fromId);
 
         fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getGitMasterSvnDirectory()});
 
@@ -79,11 +80,9 @@ public class MigrationService {
 
 
 
-    private void migrate(SvnService svn, GitService git) throws Exception {
+    private void migrate(SvnService svn, GitService git, SCId fromId) throws Exception {
 
         ArrayList<SVNLogEntry> allEntries =  svn.listAllCommits();
-
-        
 
         allEntries.sort(new Comparator<SVNLogEntry>() {
 
@@ -93,12 +92,28 @@ public class MigrationService {
             }
         });
         
-        for(int i=0;i<allEntries.size();i++){
+
+        int index = skipToIndex(allEntries,fromId);
+
+        for(int i=index;i<allEntries.size();i++){
             
             SVNLogEntry entry = allEntries.get(i);
 
            migrate(svn,git,entry);
         }
+    }
+
+    private int skipToIndex(ArrayList<SVNLogEntry> allEntries, SCId fromId) {
+
+        if(fromId.isFirst()) return 0;
+
+        for(int i=0;i<allEntries.size();i++){
+            if(allEntries.get(i).getRevision() == fromId.getSvnRevision()){
+                return i+1;
+            }
+        }
+
+        return allEntries.size();
     }
 
     private void migrate(SvnService svn, GitService git, SVNLogEntry entry) throws Exception {
