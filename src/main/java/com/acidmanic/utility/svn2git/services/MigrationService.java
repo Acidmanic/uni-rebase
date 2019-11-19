@@ -1,5 +1,6 @@
 package com.acidmanic.utility.svn2git.services;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import com.acidmanic.utility.svn2git.commitconversion.CommitConvertor;
 import com.acidmanic.utility.svn2git.commitconversion.SvnLogEntryCommitConvertor;
 import com.acidmanic.utility.svn2git.models.CommitData;
+import com.acidmanic.utility.svn2git.models.MigrationConfig;
 
 import org.tmatesoft.svn.core.SVNLogEntry;
 
@@ -19,6 +21,13 @@ public class MigrationService {
 
     private final CommitConvertor<SVNLogEntry> commitConvertor 
                 = new SvnLogEntryCommitConvertor("acidmanic.com");
+
+    private final MigrationConfig migrationConfig;
+
+
+
+
+
 
 
     public void migrate(String svnPath,String gitPath) throws Exception {
@@ -78,7 +87,9 @@ public class MigrationService {
         
         FilesystemService fs = new FilesystemService();
 
-        fs.syncInto(svn.getRootDirectory(), git.getRootDirectory(), this.IGNORELIST);
+        File sources = svn.getRootDirectory().toPath().resolve(migrationConfig.getGitMasterSvnDirectory()).toFile();
+
+        fs.syncInto(sources, git.getRootDirectory(), this.IGNORELIST);
 
         git.addAll();
 
@@ -88,10 +99,26 @@ public class MigrationService {
 
     }
 
-
     public MigrationService() {
         this.IGNORELIST = new ArrayList<>();
+        initiateIgnoreList();
+        this.migrationConfig = MigrationConfig.Default;
+    }
+
+    private void initiateIgnoreList() {
+        
         this.IGNORELIST.add(".git");
         this.IGNORELIST.add(".svn");
     }
+
+
+    public MigrationService(MigrationConfig migrationConfig) {
+        this.IGNORELIST = new ArrayList<>();
+        initiateIgnoreList();
+        this.migrationConfig = migrationConfig;
+    }
+
+
+
+
 }

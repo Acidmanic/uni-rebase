@@ -43,7 +43,7 @@ public class GitService {
     }
 
     public void addAll() throws Exception {
-        addAll(this.git, this.repoGitDirectory);
+        addAll(this.git, this.repoDirectory);
     }
 
     private void addAll(Git git, File repo) throws Exception {
