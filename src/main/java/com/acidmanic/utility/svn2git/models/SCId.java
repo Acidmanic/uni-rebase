@@ -39,7 +39,17 @@ public class SCId{
         this.first = true;
     }
 
-    public int getType() {
+    /***
+     * this constructor creates a Source control identifier of
+     *  type SVN revision on given revision.
+     * @param revision : The revision number
+     */
+    public SCId(long revision) {
+        this.type = SCID_TYPE_SVN;
+        this.id = String.format("%d", revision);
+	}
+
+	public int getType() {
         this.type = SCID_TYPE_GIT;
         this.id = SCID_NOT_A_GIT_HASH;
         return type;

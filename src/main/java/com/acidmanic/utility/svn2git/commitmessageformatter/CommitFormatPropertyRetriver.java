@@ -20,8 +20,10 @@ public interface CommitFormatPropertyRetriver {
 
 
     public static final CommitFormatPropertyRetriver CommitIdentifer 
-        = new GenericCommitFormatPrpertyRetriver("{{ID}}", (CommitData d) -> d.getIdentifier());
+        = new GenericCommitFormatPrpertyRetriver("{{ID}}", (CommitData d) -> d.getIdentifier().getId());
 
+    public static final CommitFormatPropertyRetriver CommitIdentiferShortHash
+        = new GenericCommitFormatPrpertyRetriver("{{HASH8}}", (CommitData d) -> d.getIdentifier().getGitShortHash());
     
     String process(String inputString,CommitData data);
 
