@@ -95,6 +95,8 @@ public class MigrationService {
 
         CommitData commit = this.commitConvertor.convert(entry);
 
+        commit = migrationConfig.getCommitRefiner().refine(commit);
+
         git.commit(commit);
 
     }

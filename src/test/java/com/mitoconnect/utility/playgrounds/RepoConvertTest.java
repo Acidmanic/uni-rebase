@@ -1,5 +1,7 @@
 package com.acidmanic.utility.playgrounds;
 
+import com.acidmanic.utility.svn2git.commitconversion.AuthorsByLoginCommitRefiner;
+import com.acidmanic.utility.svn2git.models.MigrationConfig;
 import com.acidmanic.utility.svn2git.services.AuthorsListFile;
 import com.acidmanic.utility.svn2git.services.MigrationService;
 
@@ -14,9 +16,11 @@ public class RepoConvertTest {
         String authorsFile = "C:\\Users\\80116\\Documents\\svn-authors.txt";
 
 
-        AuthorsListFile authors = AuthorsListFile.load(authorsFile);
+        MigrationConfig config = MigrationConfig.Default;
 
-        MigrationService migrationService = new MigrationService();
+        config.setCommitRefiner( new AuthorsByLoginCommitRefiner(authorsFile));
+
+        MigrationService migrationService = new MigrationService(config);
 
         migrationService.migrate(svn, git,"moayedi","Aa12345*");
 

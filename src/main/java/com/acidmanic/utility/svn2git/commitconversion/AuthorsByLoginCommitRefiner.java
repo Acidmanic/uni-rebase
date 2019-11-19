@@ -14,6 +14,10 @@ public class AuthorsByLoginCommitRefiner implements CommitRefiner {
         this.authorsList = authorsList;
     }
 
+    public AuthorsByLoginCommitRefiner(String authorsFile) {
+        this.authorsList = AuthorsListFile.load(authorsFile);
+    }
+
 
     @Override
     public CommitData refine(CommitData commit) {
