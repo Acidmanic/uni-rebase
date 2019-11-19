@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.acidmanic.utility.svn2git.commitconversion.CommitConvertor;
+import com.acidmanic.utility.svn2git.commitconversion.SvnLogEntryCommitConvertor;
 import com.acidmanic.utility.svn2git.models.CommitData;
 
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -15,7 +17,8 @@ public class MigrationService {
 
     private final List<String> IGNORELIST;
 
-    
+    private final CommitConvertor<SVNLogEntry> commitConvertor 
+                = new SvnLogEntryCommitConvertor("acidmanic.com");
 
 
     public void migrate(String svnPath,String gitPath) throws Exception {
@@ -72,25 +75,12 @@ public class MigrationService {
 
         git.addAll();
 
-        CommitData commit = getCommitData(entry);
+        CommitData commit = this.commitConvertor.convert(entry);
 
         git.commit(commit);
 
     }
 
-    public static CommitData getCommitData(SVNLogEntry entry) {
-        CommitData commit = new CommitData();
-
-        commit.setAuthorEmail(entry.getAuthor() + "@acidmanic.com");
-
-        commit.setAuthorName(entry.getAuthor());
-
-        commit.setDate(entry.getDate());
-
-        commit.setMessage(entry.getMessage());
-
-        return commit;
-    }
 
     public MigrationService() {
         this.IGNORELIST = new ArrayList<>();
