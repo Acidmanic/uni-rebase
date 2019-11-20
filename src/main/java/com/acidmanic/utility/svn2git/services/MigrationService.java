@@ -18,18 +18,18 @@ public class MigrationService {
     private final MigrationConfig migrationConfig;
 
 
-    public void migrate(String svnPath,String gitPath, SCId fromId) throws Exception {
+    public void migrateSvn2Git(String svnPath,String gitPath, SCId fromId) throws Exception {
         
-        GitService gitService =  new GitService(gitPath);
+        SourceControlService gitService =  new GitService(gitPath);
 
-        SvnService svnService = new SvnService(svnPath);
+        SourceControlService svnService = new SvnService(svnPath);
 
-        migrate(svnService, gitService, fromId);
+        migrateSvn2Git(svnService, gitService, fromId);
     }
 
   
 
-    public void migrate(String svnPath, String gitPath, SCId fromId, String svnUsername, String svnPassword) throws Exception {
+    public void migrateSvn2Git(String svnPath, String gitPath, SCId fromId, String svnUsername, String svnPassword) throws Exception {
     
         File srcSvnRepo = new File(svnPath);
 
@@ -51,7 +51,7 @@ public class MigrationService {
 
         SvnService svnService = new SvnService(migrationDirectory,svnUsername,svnPassword);
 
-        migrate(svnService, gitService, fromId);
+        migrateSvn2Git(svnService, gitService, fromId);
 
         fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getGitMasterSvnDirectory()});
 
@@ -63,7 +63,7 @@ public class MigrationService {
 
 
 
-    private void migrate(SvnService svn, GitService git, SCId fromId) throws Exception {
+    private void migrateSvn2Git(SourceControlService svn, SourceControlService git, SCId fromId) throws Exception {
 
         ArrayList<CommitData> allCommits =  svn.listAllCommits();
 
@@ -75,11 +75,11 @@ public class MigrationService {
             
             CommitData commit = allCommits.get(i);
 
-           migrate(svn,git,commit);
+           migrateSvn2Git(svn,git,commit);
         }
     }
 
-    private void migrate(SvnService svn, GitService git, CommitData commit) throws Exception {
+    private void migrateSvn2Git(SourceControlService svn,SourceControlService git, CommitData commit) throws Exception {
 
         SCId id = commit.getIdentifier();
 
@@ -90,13 +90,11 @@ public class MigrationService {
 
         svn.recallProjectState(id);
 
-        git.addAll();
-
         commit = migrationConfig.getCommitRefiner().refine(commit);
 
         formatMessage(commit);
 
-        git.commit(commit);
+        git.acceptAllChanges(commit);
     }
 
     private void formatMessage(CommitData commit) {
