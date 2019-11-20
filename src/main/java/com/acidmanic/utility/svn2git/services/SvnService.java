@@ -112,9 +112,11 @@ public class SvnService implements SourceControlService {
         ArrayList<CommitData> ret = new ArrayList<>();
 
         for(SVNLogEntry entry : allEntries){
-            ret.add(
-                this.commitConvertor.convert(entry)
-            );
+            if(entry.getRevision()>0){
+                ret.add(
+                    this.commitConvertor.convert(entry)
+                );
+            }
         }
 
         return ret;

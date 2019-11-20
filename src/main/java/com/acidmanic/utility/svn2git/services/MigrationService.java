@@ -1,14 +1,9 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-import com.acidmanic.utility.svn2git.commitconversion.CommitConvertor;
-import com.acidmanic.utility.svn2git.commitconversion.SvnLogEntryCommitConvertor;
 import com.acidmanic.utility.svn2git.models.CommitData;
 import com.acidmanic.utility.svn2git.models.MigrationConfig;
 import com.acidmanic.utility.svn2git.models.SCId;
@@ -23,14 +18,8 @@ public class MigrationService {
     private final MigrationConfig migrationConfig;
 
 
-
-
-
-
-
     public void migrate(String svnPath,String gitPath, SCId fromId) throws Exception {
         
-
         GitService gitService =  new GitService(gitPath);
 
         SvnService svnService = new SvnService(svnPath);
@@ -41,8 +30,7 @@ public class MigrationService {
   
 
     public void migrate(String svnPath, String gitPath, SCId fromId, String svnUsername, String svnPassword) throws Exception {
-        
-
+    
         File srcSvnRepo = new File(svnPath);
 
         File srcDotSvnDir = srcSvnRepo.toPath().resolve(".svn").toFile();
@@ -77,17 +65,17 @@ public class MigrationService {
 
     private void migrate(SvnService svn, GitService git, SCId fromId) throws Exception {
 
-        ArrayList<CommitData> allEntries =  svn.listAllCommits();
+        ArrayList<CommitData> allCommits =  svn.listAllCommits();
 
-        HistoryHelper.sort(allEntries);
+        HistoryHelper.sort(allCommits);
         
-        int index =  HistoryHelper.skipToIndex(allEntries,fromId);
+        int index =  HistoryHelper.skipToIndex(allCommits,fromId);
 
-        for(int i=index;i<allEntries.size();i++){
+        for(int i=index;i<allCommits.size();i++){
             
-            CommitData entry = allEntries.get(i);
+            CommitData commit = allCommits.get(i);
 
-           migrate(svn,git,entry);
+           migrate(svn,git,commit);
         }
     }
 
@@ -95,19 +83,19 @@ public class MigrationService {
 
         SCId id = commit.getIdentifier();
 
-        if(id.getType()==SCId.SCID_TYPE_SVN && id.getSvnRevision() ==0 ){
-            System.out.println("Wrn: skipped revision 0 (non-existing)");
+        if(id.isEmpty()) {
+            System.out.println("Wrn: skipped non-existing commit: " + id.toString());
             return;
         }
 
         svn.recallProjectState(id);
-       
+
         git.addAll();
 
         commit = migrationConfig.getCommitRefiner().refine(commit);
 
         formatMessage(commit);
-        
+
         git.commit(commit);
     }
 
@@ -136,8 +124,6 @@ public class MigrationService {
         initiateIgnoreList();
         this.migrationConfig = migrationConfig;
     }
-
-
 
 
 }

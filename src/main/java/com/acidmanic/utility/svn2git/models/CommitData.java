@@ -48,7 +48,7 @@ public class CommitData{
     }
 
     public SCId getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public void setIdentifier(SCId identifier) {

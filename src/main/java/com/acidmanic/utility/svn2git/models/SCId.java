@@ -36,6 +36,8 @@ public class SCId{
     }
 
     public SCId() {
+        this.type = SCID_TYPE_GIT;
+        this.id = SCID_NOT_A_GIT_HASH;
         this.first = true;
     }
 
@@ -50,8 +52,6 @@ public class SCId{
 	}
 
 	public int getType() {
-        this.type = SCID_TYPE_GIT;
-        this.id = SCID_NOT_A_GIT_HASH;
         return type;
     }
 
@@ -127,6 +127,8 @@ public class SCId{
 
 
     public String getGitShortHash(){
+        if(this.id==null) return "";
+        if(this.id.length()<MINIMUM_GIT_HASH_LENGTH) return this.id;
         return this.id.substring(0, MINIMUM_GIT_HASH_LENGTH);
     }
 
@@ -148,6 +150,24 @@ public class SCId{
 
         return this.id.equals(id.id);
 
+    }
+
+	public boolean isEmpty() {
+        if(this.type == SCID_TYPE_SVN && this.getSvnRevision()==0){
+            return true;
+        }
+		return false;
+    }
+    
+    @Override
+    public String toString() {
+        if(this.type == SCID_TYPE_GIT){
+            return this.getGitShortHash();
+        }
+        if(this.type==SCID_TYPE_SVN){
+            return this.id;
+        }
+        return String.format("SCID<%d:%s>", this.type,this.id);
     }
 
 }
