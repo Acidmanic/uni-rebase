@@ -1,7 +1,6 @@
 package com.acidmanic.utility.svn2git.commands;
 
 import com.acidmanic.commandline.commands.CommandBase;
-import com.acidmanic.commandline.commands.parameters.Parameter;
 import com.acidmanic.commandline.commands.parameters.ParameterBuilder;
 import com.acidmanic.utility.svn2git.commitconversion.AuthorsByLoginCommitRefiner;
 import com.acidmanic.utility.svn2git.commitmessageformatter.CommitMessageFormatter;
@@ -44,18 +43,18 @@ public class Svn2Git extends CommandBase {
                .named("git-destination-dir").described("the root directory of svn project.")
                .ofType(String.class).mandatory().indexAt(1)
         .newParam()
-               .named("authors-file").described("This is a text file containing names and emails of commiters. \n"+
+               .named("authors-file").described("This is a text file containing names and emails of commiters. "+
                "each line introduces one person in this format: (login-name) = (author-name) <(author-email)>," +
-               "\n(ex.: Mani = Mani Moayedi <acidmanic.moayedi@gmail.com>)")
-               .ofType(String.class).mandatory().indexAt(1)
+               "(ex.: Mani = Mani Moayedi <acidmanic.moayedi@gmail.com>)")
+               .ofType(String.class).mandatory().indexAt(2)
         .newParam().named("user-name").described("SVN Repository's username").ofType(String.class).optional()
         .newParam().named("password").described("SVN Repository's password").ofType(String.class).optional()
         .newParam().named("commit-pattern").described("This will be used to format commit messages while moving."+
         "\nyou can use these tags: "+
-        "\n\t{{MESSAGE}}: will be replaced by the commit message."+
-        "\n\t{{ID}}: will be replaced by SVN revision ID ."+
-        "\n\t{{DATE}}: will be replaced by commit date ."+
-        "\n\t{{AUTHOR}}: will be replaced by author name ."+
+        "\n{{MESSAGE}}: will be replaced by the commit message."+
+        "\n{{ID}}: will be replaced by SVN revision ID ."+
+        "\n{{DATE}}: will be replaced by commit date ."+
+        "\n{{AUTHOR}}: will be replaced by author name ."+
         "\nEx.: the format '[{{ID}}] - {{MESSAGE}}' will create git commits like "+
         "\n'[10022] - fix memoty leak cause in main activity'.").ofType(String.class).optional()
         ;
@@ -82,6 +81,20 @@ public class Svn2Git extends CommandBase {
            } catch (Exception e) {
            }
             
+
+           warning(getParameterValue("svn-repo"));
+
+        warning(getParameterValue("git-destination-dir"));
+
+        warning(getParameterValue("authors-file"));
+
+        warning(getParameterValue("commit-pattern"));
+
+        warning(getParameterValue("user-name"));
+
+        warning(getParameterValue("password"));
+
+
             this.info("DONE");
         }
     }
@@ -95,6 +108,10 @@ public class Svn2Git extends CommandBase {
         }else{
             migrationService.migrateSvn2Git(svn, git, SCId.createFirst(SCId.SCID_TYPE_SVN));
         }
+
+        
+
+        
     }
 
     @Override
