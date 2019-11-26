@@ -16,17 +16,17 @@ public class MigrationConfig {
     public MigrationConfig() {
     }
 
-    private String gitMasterSvnDirectory;
+    private String sourcesDirectory;
     private CommitRefiner commitRefiner;
     private CommitMessageFormatter CommitMessageFormatter;
 
 
-    public String getGitMasterSvnDirectory() {
-        return gitMasterSvnDirectory;
+    public String getSourcesDirectory() {
+        return sourcesDirectory;
     }
 
-    public void setGitMasterSvnDirectory(String gitMasterSvnDirectory) {
-        this.gitMasterSvnDirectory = gitMasterSvnDirectory;
+    public void setSourcesDirectory(String sourcesDirectory) {
+        this.sourcesDirectory = sourcesDirectory;
     }
 
     public CommitRefiner getCommitRefiner() {
@@ -45,8 +45,8 @@ public class MigrationConfig {
         CommitMessageFormatter = commitMessageFormatter;
     }
 
-    public MigrationConfig(String gitMasterSvnDirectory, CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
-        this.gitMasterSvnDirectory = gitMasterSvnDirectory;
+    public MigrationConfig(String sourcesDirectory, CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
+        this.sourcesDirectory = sourcesDirectory;
         this.commitRefiner = commitRefiner;
         this.CommitMessageFormatter = CommitMessageFormatter;
     }

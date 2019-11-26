@@ -11,8 +11,8 @@ public class RepoConvertTest {
     public static void main(String[] args) throws Exception {
         
 
-        String svn = "C:\\Users\\80116\\Documents\\RSB-ELECTRON";
-        String git = "C:\\Users\\80116\\Documents\\rsb-electron-git";
+        String svn = "C:\\Users\\80116\\Documents\\GW-BACKEND";
+        String git = "C:\\Users\\80116\\Documents\\gw-backend-git";
         String authorsFile = "C:\\Users\\80116\\Documents\\svn-authors.txt";
 
 
@@ -22,6 +22,7 @@ public class RepoConvertTest {
 
         config.setCommitMessageFormatter(new StringCommitMessageFormatter("[SVN:{{ID}}] {{MESSAGE}}"));
         
+        config.setSourcesDirectory(".");
 
         MigrationService migrationService = new MigrationService(config);
 

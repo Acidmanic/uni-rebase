@@ -148,6 +148,15 @@ public class FilesystemService {
             deleteAway(sFile);
         }
 
-	}
+    }
+    
+
+    public boolean sameLocation(File file1, File file2) {
+
+        String path1 = file1.toPath().toAbsolutePath().normalize().toString();
+        String path2 = file2.toPath().toAbsolutePath().normalize().toString();
+
+        return path1.compareTo(path2)==0;
+    }
 
 }

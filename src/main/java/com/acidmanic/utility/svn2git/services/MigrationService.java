@@ -1,6 +1,7 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class MigrationService {
 
         fs.syncInto(srcDotSvnDir, migrationDotSvn, new ArrayList<>());
 
-        File gitMigrationDirectory = migrationDirectory.toPath().resolve(this.migrationConfig.getGitMasterSvnDirectory()).toFile();
+        File gitMigrationDirectory = migrationDirectory.toPath().resolve(this.migrationConfig.getSourcesDirectory()).toFile();
 
         GitService gitService = new GitService(gitMigrationDirectory);
 
@@ -53,15 +54,22 @@ public class MigrationService {
 
         migrateSvn2Git(svnService, gitService, fromId);
 
-        fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getGitMasterSvnDirectory()});
+        if(fs.sameLocation(migrationDirectory,gitMigrationDirectory)){
+            
+            fs.deleteAway(migrationDotSvn);
+        }else{
 
-        fs.moveContent(gitMigrationDirectory,migrationDirectory);
+            fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getSourcesDirectory()});
 
-        fs.deleteAway(gitMigrationDirectory);
-        
+            fs.moveContent(gitMigrationDirectory,migrationDirectory);
+
+            fs.deleteAway(gitMigrationDirectory);
+        }
     }
 
 
+
+    
 
     private void migrateSvn2Git(SourceControlService svn, SourceControlService git, SCId fromId) throws Exception {
 
