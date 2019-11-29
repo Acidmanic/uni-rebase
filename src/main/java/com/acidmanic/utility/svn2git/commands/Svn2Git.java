@@ -59,6 +59,8 @@ public class Svn2Git extends CommandBase {
         "\n{{AUTHOR}}: will be replaced by author name ."+
         "\nEx.: the format '[{{ID}}] - {{MESSAGE}}' will create git commits like "+
         "\n'[10022] - fix memoty leak cause in main activity'.").ofType(String.class).optional()
+        .newParam().named("src-dir").described("by default it's 'trunk', but is some cases it can be other directories. this argument will set source directory when it's something other thatn trunk.")
+                .ofType(String.class).optional();
         ;
 
     }
@@ -77,6 +79,11 @@ public class Svn2Git extends CommandBase {
 
             config.setCommitMessageFormatter(this.formatter);
             
+            if(isParameterProvided("user-name")) config.setUsername(getParameterValue("user-name"));
+
+            if(isParameterProvided("password")) config.setUsername(getParameterValue("password"));
+
+            config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
            try {
                 performMigration(config);
@@ -93,12 +100,8 @@ public class Svn2Git extends CommandBase {
         String svnPath = svn.getAbsolutePath();
         String gitPath = git.getAbsolutePath();
 
-        if(isParameterProvided("user-name") && isParameterProvided("password")){
-            migrationService.migrateSvn2Git(svnPath,gitPath, SCId.createFirst(SCId.SCID_TYPE_SVN), 
-            this.getParameterValue("user-name"),this.getParameterValue("password"));
-        }else{
-            migrationService.migrateSvn2Git(svnPath, gitPath, SCId.createFirst(SCId.SCID_TYPE_SVN));
-        }
+        migrationService.migrateSvn2Git(svnPath, gitPath);
+   
 
     }
 

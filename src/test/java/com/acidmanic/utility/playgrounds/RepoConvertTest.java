@@ -24,12 +24,20 @@ public class RepoConvertTest {
         
         config.setSourcesDirectory(".");
 
+        config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
+
+        config.setUsername("moayedi");
+
+        config.setPassword("Aa12345*");
+
         MigrationService migrationService = new MigrationService(config);
+
+        migrationService.setLogger((text)-> System.out.println(text));
 
         //TEST For Resumability
         //migrationService.migrate(svn, git, new SCId(SCId.SCID_TYPE_SVN, "3"), "moayedi","Aa12345*");
 
-        migrationService.migrateSvn2Git(svn, git, SCId.createFirst(SCId.SCID_TYPE_SVN), "moayedi","Aa12345*");
+        migrationService.migrateSvn2Git(svn, git);
 
         System.out.println("DONE");
 

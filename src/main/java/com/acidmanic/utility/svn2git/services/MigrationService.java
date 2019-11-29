@@ -1,135 +1,97 @@
 package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
-import com.acidmanic.utility.svn2git.models.CommitData;
+import com.acidmanic.utility.svn2git.migrationstrategies.InDestinationSvnToGitStrategy;
+import com.acidmanic.utility.svn2git.migrationstrategies.MigrationStrategy;
 import com.acidmanic.utility.svn2git.models.MigrationConfig;
+import com.acidmanic.utility.svn2git.models.MigrationContext;
 import com.acidmanic.utility.svn2git.models.SCId;
 
 public class MigrationService {
 
-
-
-
-    private final List<String> IGNORELIST;
-
     private final MigrationConfig migrationConfig;
+    private Consumer<String> logger = (text)->{};
 
+    public void migrateSvn2Git(String svnPath, String gitPath) throws Exception {
+     
+        MigrationStrategy strategy = new InDestinationSvnToGitStrategy();
 
-    public void migrateSvn2Git(String svnPath,String gitPath, SCId fromId) throws Exception {
-        
-        SourceControlService gitService =  new GitService(gitPath);
+        strategy.setLogger(this.logger);
 
-        SourceControlService svnService = new SvnService(svnPath);
+        MigrationContext context = createSvnToGitContext(svnPath, gitPath);
 
-        migrateSvn2Git(svnService, gitService, fromId);
-    }
-
-  
-
-    public void migrateSvn2Git(String svnPath, String gitPath, SCId fromId, String svnUsername, String svnPassword) throws Exception {
-    
-        File srcSvnRepo = new File(svnPath);
-
-        File srcDotSvnDir = srcSvnRepo.toPath().resolve(".svn").toFile();
-
-        File migrationDirectory = new File(gitPath);// destination
-
-        File migrationDotSvn = migrationDirectory.toPath().resolve(".svn").toFile();
-        
-        if(!migrationDotSvn.exists()) migrationDotSvn.mkdirs();
-        
-        FilesystemService fs = new FilesystemService();
-
-        fs.syncInto(srcDotSvnDir, migrationDotSvn, new ArrayList<>());
-
-        File gitMigrationDirectory = migrationDirectory.toPath().resolve(this.migrationConfig.getSourcesDirectory()).toFile();
-
-        GitService gitService = new GitService(gitMigrationDirectory);
-
-        SvnService svnService = new SvnService(migrationDirectory,svnUsername,svnPassword);
-
-        migrateSvn2Git(svnService, gitService, fromId);
-
-        if(fs.sameLocation(migrationDirectory,gitMigrationDirectory)){
-            
-            fs.deleteAway(migrationDotSvn);
-        }else{
-
-            fs.deleteContent(migrationDirectory, new String[]{this.migrationConfig.getSourcesDirectory()});
-
-            fs.moveContent(gitMigrationDirectory,migrationDirectory);
-
-            fs.deleteAway(gitMigrationDirectory);
-        }
+        strategy.execute(context);
     }
 
 
-
-    
-
-    private void migrateSvn2Git(SourceControlService svn, SourceControlService git, SCId fromId) throws Exception {
-
-        ArrayList<CommitData> allCommits =  svn.listAllCommits();
-
-        HistoryHelper.sort(allCommits);
+    private MigrationContext createSvnToGitContext(String svnPath, String gitPath){
         
-        int index =  HistoryHelper.skipToIndex(allCommits,fromId);
+        MigrationContext context = createContext(svnPath, gitPath);
 
-        for(int i=index;i<allCommits.size();i++){
-            
-            CommitData commit = allCommits.get(i);
+        context.setCommitServiceBuilder((dir) -> safeGitService(dir));
 
-           migrateSvn2Git(svn,git,commit);
-        }
+        context.setUpdateServiceBuilder((dir) -> safeSvnService(dir));
+
+        return context;
+
     }
 
-    private void migrateSvn2Git(SourceControlService svn,SourceControlService git, CommitData commit) throws Exception {
+    private SourceControlService safeGitService(File dir) {
+        try {
+            return new GitService(dir);
+        } catch (Exception e) {}
 
-        SCId id = commit.getIdentifier();
+        this.logger.accept("Unable to create git repository at:" + dir.toString());
 
-        if(id.isEmpty()) {
-            System.out.println("Wrn: skipped non-existing commit: " + id.toString());
-            return;
-        }
-
-        svn.recallProjectState(id);
-
-        commit = migrationConfig.getCommitRefiner().refine(commit);
-
-        formatMessage(commit);
-
-        git.acceptAllChanges(commit);
+        return null;
     }
 
-    private void formatMessage(CommitData commit) {
+    private SourceControlService safeSvnService(File dir) {
+        try {
+            if(this.migrationConfig.getUsername()!=null){
+                return new SvnService(dir, this.migrationConfig.getUsername(), this.migrationConfig.getPassword());
+            }
+            return new SvnService(dir);
+        } catch (Exception e) {}
+
+        this.logger.accept("Unable to create SVN repository at:" + dir.toString());
         
-        String message = this.migrationConfig.getCommitMessageFormatter().format(commit);
-        
-        commit.setMessage(message);
+        return null;
+    }
+
+    private MigrationContext createContext(String svnPath, String gitPath) {
+        MigrationContext context = new MigrationContext();
+
+        context.setConfig(this.migrationConfig);
+        context.setDestinationDirectory(new File(gitPath));
+        context.setSourceRepoLocations(Repository.svnRepositoryLocations(svnPath));
+        return context;
     }
 
     public MigrationService() {
-        this.IGNORELIST = new ArrayList<>();
-        initiateIgnoreList();
         this.migrationConfig = MigrationConfig.Default;
-    }
-
-    private void initiateIgnoreList() {
-        
-        this.IGNORELIST.add(".git");
-        this.IGNORELIST.add(".svn");
     }
 
 
     public MigrationService(MigrationConfig migrationConfig) {
-        this.IGNORELIST = new ArrayList<>();
-        initiateIgnoreList();
         this.migrationConfig = migrationConfig;
     }
 
+    public MigrationConfig getMigrationConfig() {
+        return migrationConfig;
+    }
 
+    public Consumer<String> getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Consumer<String> logger) {
+        this.logger = logger;
+    }
+
+
+    
 }

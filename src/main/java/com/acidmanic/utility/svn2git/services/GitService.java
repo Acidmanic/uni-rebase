@@ -2,12 +2,15 @@ package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 import com.acidmanic.utility.svn2git.models.CommitData;
 import com.acidmanic.utility.svn2git.models.SCId;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -43,7 +46,18 @@ public class GitService implements SourceControlService {
 
     private void addAll(Git git, File repo) throws Exception {
 
-        String[] all = repo.list();
+
+        Status status = git.status().call();
+
+        List<String> all = new ArrayList<>();
+
+        all.addAll(status.getUntracked());
+
+        all.addAll(status.getMissing());
+
+        all.addAll(status.getRemoved());
+
+        all.addAll(status.getModified());
 
         GitIgnoreFile gitIgnoreFile = new GitIgnoreFile(repo);
 
@@ -54,6 +68,7 @@ public class GitService implements SourceControlService {
                 git.add().addFilepattern(item).call();
             }
         }
+
     }
 
     public void commit(String message) throws Exception {

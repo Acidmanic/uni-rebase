@@ -2,6 +2,7 @@ package com.acidmanic.utility.svn2git.services;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,5 +159,41 @@ public class FilesystemService {
 
         return path1.compareTo(path2)==0;
     }
+
+
+    public Path resolve(Path base,String...relative){
+        Path ret = base;
+
+        for(String rel:relative){
+
+            ret = ret.resolve(rel);
+        }
+
+        return ret;
+    }
+
+    public File resolve(File base,String...relative){
+        return resolve(base.toPath(), relative).toFile();
+    }
+
+	public void copyContent(File srcDir, File dstDir) throws Exception {
+        
+        File[] subs = srcDir.listFiles();
+
+        for(File f : subs){
+
+            if(f.isDirectory()){
+                
+                File dstF = dstDir.toPath().resolve(f.getName()).toFile();
+
+                dstF.mkdirs();
+
+                copyContent(f, dstF);
+            }else{
+                
+                copySingleFileToDirectory(f, dstDir);
+            }
+        }
+	}
 
 }

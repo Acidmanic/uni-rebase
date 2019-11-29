@@ -14,11 +14,34 @@ public class MigrationConfig {
 
 
     public MigrationConfig() {
+        this.username = null;
+        this.password = null;
+    }
+
+    
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     private String sourcesDirectory;
     private CommitRefiner commitRefiner;
     private CommitMessageFormatter CommitMessageFormatter;
+    private SCId lastCommitedId = SCId.FIRST_GIT_COMMIT;
+    private String username = null;
+    private String password = null;
 
 
     public String getSourcesDirectory() {
@@ -54,6 +77,14 @@ public class MigrationConfig {
 
     public static MigrationConfig formatedMigrationConfig(String commitMessageFormat){
         return new MigrationConfig("trunk", new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
+    }
+
+	public SCId getLastCommitedId() {
+		return this.lastCommitedId;
+    }
+
+    public void setLastCommitedId(SCId lastCommitedId) {
+        this.lastCommitedId = lastCommitedId;
     }
     
 }
