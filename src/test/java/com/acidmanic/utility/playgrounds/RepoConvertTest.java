@@ -1,10 +1,10 @@
 package com.acidmanic.utility.playgrounds;
 
-import com.acidmanic.utility.svn2git.commitconversion.AuthorsByLoginCommitRefiner;
-import com.acidmanic.utility.svn2git.models.MigrationConfig;
-import com.acidmanic.utility.svn2git.models.SCId;
-import com.acidmanic.utility.svn2git.services.MigrationService;
-import com.acidmanic.utility.svn2git.commitmessageformatter.StringCommitMessageFormatter;
+import com.acidmanic.utility.unirebase.commitconversion.AuthorsByLoginCommitRefiner;
+import com.acidmanic.utility.unirebase.models.MigrationConfig;
+import com.acidmanic.utility.unirebase.models.SCId;
+import com.acidmanic.utility.unirebase.services.MigrationService;
+import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
 public class RepoConvertTest {
 
 

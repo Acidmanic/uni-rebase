@@ -1,6 +1,6 @@
 package com.acidmanic.utility;
 
-import com.acidmanic.utility.svn2git.commands.CommandRegistery;
+import com.acidmanic.utility.unirebase.commands.CommandRegistery;
 
 import com.acidmanic.commandline.application.ExecutionEnvironment;
 

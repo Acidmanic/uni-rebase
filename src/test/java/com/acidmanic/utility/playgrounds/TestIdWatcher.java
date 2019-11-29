@@ -2,9 +2,9 @@ package com.acidmanic.utility.playgrounds;
 
 import java.util.Date;
 
-import com.acidmanic.utility.svn2git.models.Author;
-import com.acidmanic.utility.svn2git.models.SCId;
-import com.acidmanic.utility.svn2git.services.IdWatcher;
+import com.acidmanic.utility.unirebase.models.Author;
+import com.acidmanic.utility.unirebase.models.SCId;
+import com.acidmanic.utility.unirebase.services.IdWatcher;
 
 public class TestIdWatcher {
 
