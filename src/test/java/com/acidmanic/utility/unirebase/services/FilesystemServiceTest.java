@@ -16,7 +16,7 @@ public class FilesystemServiceTest{
 
         FilesystemService sut = new FilesystemService();
 
-        File f1 = new File("subDirectory\\..");
+        File f1 = new File("subDirectory").toPath().resolve("..").toFile();
         File f2 = new File(".");
         
         boolean result = sut.sameLocation(f1,f2);
