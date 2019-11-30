@@ -1,19 +1,22 @@
 package com.acidmanic.utility.playgrounds;
 
+import com.acidmanic.utility.Debug;
 import com.acidmanic.utility.unirebase.commitconversion.AuthorsByLoginCommitRefiner;
 import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.MigrationService;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
+import com.acidmanic.utility.unirebase.services.FilesystemService;
 public class RepoConvertTest {
 
 
     public static void main(String[] args) throws Exception {
         
+        FilesystemService fs = new FilesystemService();
 
-        String svn = "C:\\Users\\80116\\Documents\\GW-BACKEND";
-        String git = "C:\\Users\\80116\\Documents\\gw-backend-git";
-        String authorsFile = "C:\\Users\\80116\\Documents\\svn-authors.txt";
+        String svn =  fs.getFile(Debug.DEVELOPE_DIR,"uni-rebase-test").toString();
+        String git =  fs.getFile(Debug.DEVELOPE_DIR,"uni-rebase-test-git").toString();
+        String authorsFile = fs.getFile(Debug.DEVELOPE_DIR,"svn-authors.txt").toString();
 
 
         MigrationConfig config = MigrationConfig.Default;
@@ -22,13 +25,13 @@ public class RepoConvertTest {
 
         config.setCommitMessageFormatter(new StringCommitMessageFormatter("[SVN:{{ID}}] {{MESSAGE}}"));
         
-        config.setSourcesDirectory(".");
+//        config.setSourcesDirectory(".");
 
         config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
-        config.setUsername("moayedi");
+        config.setUsername("acidmacni");
 
-        config.setPassword("Aa12345*");
+        config.setPassword(Debug.read("password"));
 
         MigrationService migrationService = new MigrationService(config);
 
@@ -42,4 +45,5 @@ public class RepoConvertTest {
         System.out.println("DONE");
 
     }
+
 }

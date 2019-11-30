@@ -3,6 +3,7 @@ package com.acidmanic.utility.unirebase.services;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -196,4 +197,15 @@ public class FilesystemService {
         }
 	}
 
+        public File getFile(String...path){
+            if(path.length<1){
+                return new File("");
+            }
+            Path ret = Paths.get(path[0]);
+            
+            for(int i=1;i<path.length;i++){
+                ret=ret.resolve(path[i]);
+            }
+            return ret.toFile();
+        }
 }

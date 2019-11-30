@@ -7,6 +7,9 @@ import com.acidmanic.utility.unirebase.commitconversion.SvnLogEntryCommitConvert
 import com.acidmanic.utility.unirebase.exceptions.NotImplementedYetException;
 import com.acidmanic.utility.unirebase.models.CommitData;
 import com.acidmanic.utility.unirebase.models.SCId;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -17,12 +20,17 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
+import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.DefaultSVNRepositoryPool;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+import org.tmatesoft.svn.core.wc2.SvnLog;
+import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
+import org.tmatesoft.svn.core.wc2.SvnRevisionRange;
+import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 public class SvnService implements SourceControlService {
 
@@ -42,7 +50,7 @@ public class SvnService implements SourceControlService {
 
     private ISVNOptions svnOptions;
 
-    private SvnLogEntryCommitConvertor commitConvertor = new SvnLogEntryCommitConvertor();
+    private final SvnLogEntryCommitConvertor commitConvertor = new SvnLogEntryCommitConvertor();
 
     public SvnService(File repoFile) throws Exception {
         this.repoFile = repoFile;
@@ -102,22 +110,29 @@ public class SvnService implements SourceControlService {
     private void clearSVNDirectory(File repoFile) {
     }
 
+    @Override
     public ArrayList<CommitData> listAllCommits() throws Exception {
 
-        ArrayList<SVNLogEntry> allEntries = new ArrayList<>();
+        SvnOperationFactory operationFactory = new SvnOperationFactory();
+        SvnLog logOperation = operationFactory.createLog();
+        logOperation.setSingleTarget(
+                SvnTarget.fromFile(this.repoFile)
+        );
+        
+        logOperation.setRevisionRanges(Collections.singleton(
+                SvnRevisionRange.create(
+                        SVNRevision.create(1),
+                        SVNRevision.HEAD
+                )
+        ));
+        
+        Collection<SVNLogEntry> logEntries = logOperation.run(null);
 
-        logClient.doLog(new File[] { repoFile }, SVNRevision.BASE, null, null, false, false, 1000000,
-                (logEntry) -> allEntries.add(logEntry));
 
         ArrayList<CommitData> ret = new ArrayList<>();
 
-        for(SVNLogEntry entry : allEntries){
-            if(entry.getRevision()>0){
-                ret.add(
-                    this.commitConvertor.convert(entry)
-                );
-            }
-        }
+        logEntries.forEach((entry) -> ret.add(this.commitConvertor.convert(entry)));
+
 
         return ret;
 
@@ -128,11 +143,13 @@ public class SvnService implements SourceControlService {
         return this.repoFile;
     }
 
+    @Override
     public void dispose() {
 
         repositoryPool.shutdownConnections(true);
     }
 
+    @Override
     public void ignore(File file) throws Exception {
         File dir = file.getParentFile().getAbsoluteFile();
 

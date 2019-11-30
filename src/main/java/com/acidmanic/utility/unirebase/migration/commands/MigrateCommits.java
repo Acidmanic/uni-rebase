@@ -16,7 +16,6 @@ public class MigrateCommits implements MigrationCommand {
     public void execute( MigrationContext context) {
 
         SourceControlService source = context.getUpdateServiceBuilder().build(context.getUpdateRepoLocations().getQueryRootDir());
-        SourceControlService destination=context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
         ArrayList<CommitData> allCommits;
         try {
@@ -25,6 +24,8 @@ public class MigrateCommits implements MigrationCommand {
             // TODO Auto-generated catch block
             return;
         }
+        
+        SourceControlService destination=context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
         HistoryHelper.sort(allCommits);
 
@@ -40,7 +41,6 @@ public class MigrateCommits implements MigrationCommand {
                 migrateSvn2Git(source,destination,commit,context.getConfig());
            } catch (Exception e) {
                //TODO: handle exception
-               e=e;
            }
         }
         

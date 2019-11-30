@@ -49,23 +49,32 @@ public class GitService implements SourceControlService {
 
         Status status = git.status().call();
 
-        List<String> all = new ArrayList<>();
+        List<String> added = new ArrayList<>();
+        List<String> removed = new ArrayList<>();
 
-        all.addAll(status.getUntracked());
+        added.addAll(status.getUntracked());
 
-        all.addAll(status.getMissing());
+        removed.addAll(status.getMissing());
 
-        all.addAll(status.getRemoved());
+        removed.addAll(status.getRemoved());
 
-        all.addAll(status.getModified());
+        added.addAll(status.getModified());
 
         GitIgnoreFile gitIgnoreFile = new GitIgnoreFile(repo);
 
-        for (String item : all) {
+        for (String item : added) {
             if (".git".equals(item) || gitIgnoreFile.isIgnored(item)) {
                 System.out.println(item + " has been ignored");
             } else {
                 git.add().addFilepattern(item).call();
+            }
+        }
+        
+        for (String item : removed) {
+            if (gitIgnoreFile.isIgnored(item)) {
+                System.out.println(item + " has been ignored");
+            } else {
+                git.rm().addFilepattern(item).call();
             }
         }
 
