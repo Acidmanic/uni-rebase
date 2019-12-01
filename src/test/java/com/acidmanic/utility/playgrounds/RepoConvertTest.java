@@ -29,7 +29,7 @@ public class RepoConvertTest {
 
         config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
-        config.setUsername("acidmacni");
+        config.setUsername(Debug.read("username"));
 
         config.setPassword(Debug.read("password"));
 
