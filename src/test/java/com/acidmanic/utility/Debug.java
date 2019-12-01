@@ -20,7 +20,7 @@ public class Debug {
     public static String read(String debugDataFile){
         try {
             byte[] data = Files.readAllBytes(Paths.get(".").resolve(DEVELOPE_DIR).resolve(debugDataFile));
-            return new String(data);
+            return new String(data).trim();
         } catch (Exception e) {
         }
         

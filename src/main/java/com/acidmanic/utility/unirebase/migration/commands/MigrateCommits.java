@@ -40,7 +40,7 @@ public class MigrateCommits implements MigrationCommand {
            try {
                 migrateSvn2Git(source,destination,commit,context.getConfig());
            } catch (Exception e) {
-               //TODO: handle exception
+               e=e;
            }
         }
         

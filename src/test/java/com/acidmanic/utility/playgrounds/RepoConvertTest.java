@@ -25,8 +25,6 @@ public class RepoConvertTest {
 
         config.setCommitMessageFormatter(new StringCommitMessageFormatter("[SVN:{{ID}}] {{MESSAGE}}"));
         
-//        config.setSourcesDirectory(".");
-
         config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
         config.setUsername(Debug.read("username"));
@@ -36,9 +34,6 @@ public class RepoConvertTest {
         MigrationService migrationService = new MigrationService(config);
 
         migrationService.setLogger((text)-> System.out.println(text));
-
-        //TEST For Resumability
-        //migrationService.migrate(svn, git, new SCId(SCId.SCID_TYPE_SVN, "3"), "moayedi","Aa12345*");
 
         migrationService.migrateSvn2Git(svn, git);
 

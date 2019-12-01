@@ -27,6 +27,7 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+import org.tmatesoft.svn.core.wc.SVNWCClient;
 import org.tmatesoft.svn.core.wc2.SvnLog;
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory;
 import org.tmatesoft.svn.core.wc2.SvnRevisionRange;
@@ -47,8 +48,12 @@ public class SvnService implements SourceControlService {
     private ISVNAuthenticationManager authenticationManager;
 
     private SVNClientManager clientManager;
+    
+    private SVNWCClient wcClient;
 
     private ISVNOptions svnOptions;
+    
+    private DefaultSVNOptions sVNOptions;
 
     private final SvnLogEntryCommitConvertor commitConvertor = new SvnLogEntryCommitConvertor();
 
@@ -60,10 +65,14 @@ public class SvnService implements SourceControlService {
         this.repositoryPool = new DefaultSVNRepositoryPool(null, null);
 
         this.repositoryPool.createRepository(repoUrl, true);
+        
+        this.svnOptions = new DefaultSVNOptions();
 
-        this.updateClient = new SVNUpdateClient(repositoryPool, new DefaultSVNOptions());
+        this.updateClient = new SVNUpdateClient(repositoryPool, svnOptions);
 
-        this.logClient = new SVNLogClient(repositoryPool, new DefaultSVNOptions());
+        this.logClient = new SVNLogClient(repositoryPool, svnOptions);
+        
+        this.wcClient = new SVNWCClient(repositoryPool, svnOptions);
 
         this.svnOptions = new DefaultSVNOptions();
 
@@ -101,13 +110,14 @@ public class SvnService implements SourceControlService {
 
     private void updateToRevision(File repoFile, SVNUpdateClient updateClient, long revision) throws SVNException {
         clearSVNDirectory(repoFile);
-
+        
         updateClient.doUpdate(repoFile, SVNRevision.create(revision), SVNDepth.INFINITY, true, true);
 
         System.out.println("Updated to " + revision + "'th' revision");
     }
 
-    private void clearSVNDirectory(File repoFile) {
+    private void clearSVNDirectory(File repoFile) throws SVNException {
+        this.wcClient.doCleanup(repoFile);
     }
 
     @Override
