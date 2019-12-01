@@ -8,7 +8,10 @@ import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.HistoryHelper;
+import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
+import java.io.File;
+import java.util.List;
 
 public class MigrateCommits implements MigrationCommand {
 
@@ -25,11 +28,16 @@ public class MigrateCommits implements MigrationCommand {
             return;
         }
         
+        File progressFile = context.getProgressFile(); 
+        
+        MigrationProgress progress = new MigrationProgress(progressFile);
+        
         SourceControlService destination=context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
+        
         HistoryHelper.sort(allCommits);
 
-        SCId fromId = context.getConfig().getLastCommitedId();
+        SCId fromId = getLastCommit(context,progress);
         
         int index =  HistoryHelper.skipToIndex(allCommits,fromId);
 
@@ -38,11 +46,15 @@ public class MigrateCommits implements MigrationCommand {
             CommitData commit = allCommits.get(i);
 
            try {
-                migrateSvn2Git(source,destination,commit,context.getConfig());
+                migrateSvn2Git(source,destination,commit,context.getConfig(),progress);
            } catch (Exception e) {
                e=e;
            }
         }
+        
+        source.dispose();
+        
+        destination.dispose();
         
     }
 
@@ -50,7 +62,8 @@ public class MigrateCommits implements MigrationCommand {
     private void migrateSvn2Git(SourceControlService svn 
                                ,SourceControlService git
                                ,CommitData commit
-                               ,MigrationConfig config) throws Exception {
+                               ,MigrationConfig config
+                               ,MigrationProgress progress) throws Exception {
 
         SCId id = commit.getIdentifier();
 
@@ -68,7 +81,19 @@ public class MigrateCommits implements MigrationCommand {
         );
 
         git.acceptAllChanges(commit);
+        
+        progress.setLastCommit(commit.getIdentifier());
+        
     }
 
+
+    private SCId getLastCommit(MigrationContext context, MigrationProgress progress) {
+        
+        SCId ret = progress.getLastCommit();
+        if(ret != null){
+            return ret;
+        }
+        return context.getConfig().getLastCommitedId();
+    }
 
 }

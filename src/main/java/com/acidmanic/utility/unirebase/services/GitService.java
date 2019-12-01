@@ -11,8 +11,10 @@ import com.acidmanic.utility.unirebase.models.SCId;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.omg.PortableInterceptor.ObjectIdHelper;
 
 public class GitService implements SourceControlService {
 
@@ -128,8 +130,10 @@ public class GitService implements SourceControlService {
     public ArrayList<CommitData> listAllCommits() throws Exception {
         
         ArrayList<CommitData> ret =  new ArrayList<>();
-
-        Iterable<RevCommit> commits =  this.git.log().all().call();
+        
+        
+        
+        Iterable<RevCommit> commits =  this.git.log().call();
 
         commits.forEach(rev -> ret.add(convert(rev)));
 

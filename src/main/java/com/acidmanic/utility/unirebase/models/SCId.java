@@ -22,6 +22,15 @@ public class SCId{
     public static final SCId FIRST_GIT_COMMIT = createFirst(SCID_TYPE_GIT);
 
     public static final SCId FIRST_SVN_COMMIT = createFirst(SCID_TYPE_SVN);
+
+    public static SCId create(String id) {
+        try {
+            long lId = Long.parseLong(id);
+            return new SCId(lId);
+        } catch (Exception e) {        }
+        
+        return new SCId(SCID_TYPE_GIT, id);
+    }
     
     private int type;
 

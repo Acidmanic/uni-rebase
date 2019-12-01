@@ -14,7 +14,7 @@ public class InDestinationSvnToGitStrategy extends MigrationStrategy {
     @Override
     protected void onConfigureSteps(List<Class<? extends MigrationCommand>> steps) {
 
-        steps.add(CleanTargetDirectory.class);
+//        steps.add(CleanTargetDirectory.class);
         
         steps.add(SetUpdateRepoToSvnRepoAtDestination.class);
 

@@ -76,6 +76,10 @@ public class MigrationContext {
         this.sourceRepoLocations = sourceRepoLocations;
     }
 
+    public File getProgressFile() {
+         return new File(this.getDestinationDirectory().getAbsolutePath() + ".progress");
+    }
+
     
 
 }
