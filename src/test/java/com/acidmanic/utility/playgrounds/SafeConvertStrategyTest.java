@@ -36,10 +36,12 @@ public class SafeConvertStrategyTest {
         config.setPassword(Debug.read("password"));
         
         config.setMigrationStrategy(new SafeMigrationStrategy());
+        
+        config.setForceClean(true);
 
         MigrationService migrationService = new MigrationService(config);
 
-        migrationService.setLogger((text)-> System.out.println(text));
+        migrationService.setLogger((text)-> System.out.println("DBG:" + text));
 
         migrationService.migrateSvn2Git(svn, git);
 

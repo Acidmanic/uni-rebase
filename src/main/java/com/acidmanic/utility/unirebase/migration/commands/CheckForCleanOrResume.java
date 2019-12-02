@@ -21,6 +21,8 @@ public class CheckForCleanOrResume implements MigrationCommand {
             FilesystemService fs = new FilesystemService();
 
             fs.deleteAway(context.getDestinationDirectory());
+            
+            fs.deleteAway(context.getProgressFile());
         }
 
     }

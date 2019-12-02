@@ -6,15 +6,12 @@ import com.acidmanic.utility.unirebase.migration.MigrationCommand;
 import com.acidmanic.utility.unirebase.models.CommitData;
 import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
-import com.acidmanic.utility.unirebase.models.RepositoryLocations;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.HistoryHelper;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MigrateCommits implements MigrationCommand {
 

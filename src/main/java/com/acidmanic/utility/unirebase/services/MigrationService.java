@@ -1,14 +1,11 @@
 package com.acidmanic.utility.unirebase.services;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import com.acidmanic.utility.unirebase.migrationstrategies.InDestinationSvnToGitStrategy;
 import com.acidmanic.utility.unirebase.migrationstrategies.MigrationStrategy;
 import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
-import com.acidmanic.utility.unirebase.models.SCId;
 
 public class MigrationService {
 
