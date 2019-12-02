@@ -98,6 +98,8 @@ public class Svn2Git extends CommandBase {
 
     private void performMigration(MigrationConfig config)  throws Exception{
         MigrationService migrationService = new MigrationService(config);
+        
+        migrationService.setLogger((text) -> info(text));
 
         String svnPath = svn.getAbsolutePath();
         String gitPath = git.getAbsolutePath();

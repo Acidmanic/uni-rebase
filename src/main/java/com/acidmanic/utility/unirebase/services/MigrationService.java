@@ -19,8 +19,6 @@ public class MigrationService {
      
         MigrationStrategy strategy = this.migrationConfig.getMigrationStrategy();
 
-        strategy.setLogger(this.logger);
-
         MigrationContext context = createSvnToGitContext(svnPath, gitPath);
 
         strategy.execute(context);
@@ -69,6 +67,8 @@ public class MigrationService {
         context.setDestinationDirectory(new File(gitPath));
         context.setSourceRepoLocations(Repository.svnRepositoryLocations(svnPath
                 ,this.migrationConfig.getSourcesDirectory()));
+        context.setLogger(this.logger);
+        
         return context;
     }
 

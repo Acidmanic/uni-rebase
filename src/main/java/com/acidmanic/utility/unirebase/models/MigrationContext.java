@@ -3,6 +3,7 @@ package com.acidmanic.utility.unirebase.models;
 import java.io.File;
 
 import com.acidmanic.utility.unirebase.services.SourceControlServiceBuilder;
+import java.util.function.Consumer;
 
 public class MigrationContext {
 
@@ -19,6 +20,8 @@ public class MigrationContext {
     private SourceControlServiceBuilder updateServiceBuilder;
 
     private SourceControlServiceBuilder commitServiceBuilder;
+    
+    private Consumer<String> logger = (text) ->{};
 
     public RepositoryLocations getSourceRepoLocations() {
         return sourceRepoLocations;
@@ -78,6 +81,14 @@ public class MigrationContext {
 
     public File getProgressFile() {
          return new File(this.getDestinationDirectory().getAbsolutePath() + ".progress");
+    }
+
+    public Consumer<String> getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Consumer<String> logger) {
+        this.logger = logger;
     }
 
     
