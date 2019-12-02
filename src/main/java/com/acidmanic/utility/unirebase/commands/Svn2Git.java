@@ -85,6 +85,8 @@ public class Svn2Git extends CommandBase {
 
             if(isParameterProvided("password")) config.setPassword(getParameterValue("password"));
 
+            if(isParameterProvided("clean")) config.setForceClean(getParameterValue("clean"));
+            
             config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
            try {
