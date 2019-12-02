@@ -7,6 +7,7 @@ import com.acidmanic.utility.unirebase.commitmessageformatter.DefaultCommitMessa
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.migrationstrategies.InDestinationSvnToGitStrategy;
 import com.acidmanic.utility.unirebase.migrationstrategies.MigrationStrategy;
+import com.acidmanic.utility.unirebase.migrationstrategies.SafeMigrationStrategy;
 import com.acidmanic.utility.unirebase.services.GitService;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 
@@ -48,7 +49,7 @@ public class MigrationConfig {
     private SCId lastCommitedId = SCId.FIRST_GIT_COMMIT;
     private String username = null;
     private String password = null;
-    private MigrationStrategy migrationStrategy = new InDestinationSvnToGitStrategy();
+    private MigrationStrategy migrationStrategy = new SafeMigrationStrategy();
     private boolean forceClean = false;
 
     public String getSourcesDirectory() {
