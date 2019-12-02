@@ -1,5 +1,6 @@
 package com.acidmanic.utility.unirebase.migrationstrategies;
 
+import com.acidmanic.utility.unirebase.migration.commands.CheckForCleanOrResume;
 import com.acidmanic.utility.unirebase.migration.commands.CopySourceRepoDbToDestinationDirectory;
 import com.acidmanic.utility.unirebase.migration.commands.MigrateCommits;
 import com.acidmanic.utility.unirebase.migration.commands.SetCommitRepoToGitOnSvnAtDestination;
@@ -9,13 +10,11 @@ public class InDestinationSvnToGitStrategy extends MigrationStrategy {
 
     @Override
     protected void onConfigureSteps(StrategyBuilder builder) {
-        builder.first(SetUpdateRepoToSvnRepoAtDestination.class)
-
-        .then(SetCommitRepoToGitOnSvnAtDestination.class)
-
-        .then(CopySourceRepoDbToDestinationDirectory.class)
-
-        .then(MigrateCommits.class);
+        builder.first(CheckForCleanOrResume.class)
+                .then(SetUpdateRepoToSvnRepoAtDestination.class)
+                .then(SetCommitRepoToGitOnSvnAtDestination.class)
+                .then(CopySourceRepoDbToDestinationDirectory.class)
+                .then(MigrateCommits.class);
     }
 
 }

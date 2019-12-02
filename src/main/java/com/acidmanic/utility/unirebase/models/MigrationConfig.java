@@ -49,6 +49,7 @@ public class MigrationConfig {
     private String username = null;
     private String password = null;
     private MigrationStrategy migrationStrategy = new InDestinationSvnToGitStrategy();
+    private boolean forceClean = false;
 
     public String getSourcesDirectory() {
         return sourcesDirectory;
@@ -113,7 +114,14 @@ public class MigrationConfig {
     public void setMigrationStrategy(MigrationStrategy migrationStrategy) {
         this.migrationStrategy = migrationStrategy;
     }
-    
+
+    public boolean isForceClean() {
+        return forceClean;
+    }
+
+    public void setForceClean(boolean forceClean) {
+        this.forceClean = forceClean;
+    }
     
     
 }

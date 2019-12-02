@@ -60,8 +60,10 @@ public class Svn2Git extends CommandBase {
         "\nEx.: the format '[{{ID}}] - {{MESSAGE}}' will create git commits like "+
         "\n'[10022] - fix memoty leak cause in main activity'.").ofType(String.class).optional()
         .newParam().named("src-dir").described("by default it's 'trunk', but is some cases it can be other directories. this argument will set source directory when it's something other thatn trunk.")
-                .ofType(String.class).optional();
-        ;
+                .ofType(String.class).optional()
+        .newParam().named("clean").described("clean=true will remove any work from last run, and clean=false makes app to resume last work.")
+                .ofType(boolean.class).optional();
+        
 
     }
 

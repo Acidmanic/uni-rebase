@@ -13,14 +13,16 @@ import com.acidmanic.utility.unirebase.services.FilesystemService;
  *
  * @author diego
  */
-public class CleanTargetDirectory implements MigrationCommand{
+public class CheckForCleanOrResume implements MigrationCommand {
 
     @Override
     public void execute(MigrationContext context) {
-        
-        FilesystemService fs = new FilesystemService();
-        
-        fs.deleteAway(context.getDestinationDirectory());
+        if (context.getConfig().isForceClean()) {
+            FilesystemService fs = new FilesystemService();
+
+            fs.deleteAway(context.getDestinationDirectory());
+        }
+
     }
-    
+
 }
