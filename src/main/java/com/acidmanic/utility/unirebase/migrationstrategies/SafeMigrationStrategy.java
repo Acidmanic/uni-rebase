@@ -20,9 +20,7 @@ public class SafeMigrationStrategy extends MigrationStrategy{
     @Override
     protected void onConfigureSteps(StrategyBuilder builder) {
         
-        builder.first(AutoSetSourceControlServiceBuilders.class)
-                
-                .then(SetSourceAsUpdateRepo.class)
+        builder.first(SetSourceAsUpdateRepo.class)
                 
                 .then(SetDestinationAsCommitRepo.class)
                 

@@ -6,9 +6,10 @@ import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.MigrationService;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
+import com.acidmanic.utility.unirebase.migrationstrategies.SafeMigrationStrategy;
 import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.SvnService;
-public class RepoConvertTest {
+public class SafeConvertStrategyTest {
 
 
     public static void main(String[] args) throws Exception {
@@ -33,6 +34,8 @@ public class RepoConvertTest {
         config.setUsername(Debug.read("username"));
 
         config.setPassword(Debug.read("password"));
+        
+        config.setMigrationStrategy(new SafeMigrationStrategy());
 
         MigrationService migrationService = new MigrationService(config);
 

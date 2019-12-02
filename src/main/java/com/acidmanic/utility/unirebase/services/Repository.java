@@ -18,6 +18,14 @@ public class Repository {
     public static RepositoryLocations svnRepositoryLocations(String rootDirectory){
         return getRepositoryLocations(rootDirectory,".svn");
     }
+    
+    public static RepositoryLocations svnRepositoryLocations(String rootDirectory,String trunk){
+        RepositoryLocations ret = getRepositoryLocations(rootDirectory,".svn");
+        
+        ret.setSourcesDir(ret.getSourcesDir().toPath().resolve(trunk).toFile());
+        
+        return ret;
+    }
 
     public static RepositoryLocations gitOnSvn(String rootDirectory,String trunk){
 

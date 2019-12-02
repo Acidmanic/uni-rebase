@@ -6,11 +6,15 @@ import com.acidmanic.utility.unirebase.migration.MigrationCommand;
 import com.acidmanic.utility.unirebase.models.CommitData;
 import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
+import com.acidmanic.utility.unirebase.models.RepositoryLocations;
 import com.acidmanic.utility.unirebase.models.SCId;
+import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.HistoryHelper;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MigrateCommits implements MigrationCommand {
 
@@ -45,7 +49,7 @@ public class MigrateCommits implements MigrationCommand {
             CommitData commit = allCommits.get(i);
 
            try {
-                migrateSvn2Git(source,destination,commit,context.getConfig(),progress);
+                migrateSvn2Git(source,destination,commit,context,progress);
            } catch (Exception e) {
                e=e;
            }
@@ -61,7 +65,7 @@ public class MigrateCommits implements MigrationCommand {
     private void migrateSvn2Git(SourceControlService svn 
                                ,SourceControlService git
                                ,CommitData commit
-                               ,MigrationConfig config
+                               ,MigrationContext context
                                ,MigrationProgress progress) throws Exception {
 
         SCId id = commit.getIdentifier();
@@ -72,7 +76,11 @@ public class MigrateCommits implements MigrationCommand {
         }
 
         svn.recallProjectState(id);
+        
+        syncIfNotTheSame(context);
 
+        MigrationConfig config = context.getConfig();
+        
         commit = config.getCommitRefiner().refine(commit);
 
         commit.setMessage(
@@ -93,6 +101,22 @@ public class MigrateCommits implements MigrationCommand {
             return ret;
         }
         return context.getConfig().getLastCommitedId();
+    }
+
+    private void syncIfNotTheSame(MigrationContext context) {
+        FilesystemService fs = new FilesystemService();
+        File src = context.getUpdateRepoLocations().getSourcesDir();
+        File dst = context.getCommitRepoLocations().getSourcesDir();
+        
+        if(fs.sameLocation(src, dst)){
+            return;
+        }
+        
+        try {
+            fs.copyContent(src, dst);
+        } catch (Exception ex) {
+            //TODO: add to log
+        }
     }
 
 }

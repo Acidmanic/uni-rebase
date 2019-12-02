@@ -17,7 +17,7 @@ public class MigrationService {
 
     public void migrateSvn2Git(String svnPath, String gitPath) throws Exception {
      
-        MigrationStrategy strategy = new InDestinationSvnToGitStrategy();
+        MigrationStrategy strategy = this.migrationConfig.getMigrationStrategy();
 
         strategy.setLogger(this.logger);
 
@@ -67,7 +67,8 @@ public class MigrationService {
 
         context.setConfig(this.migrationConfig);
         context.setDestinationDirectory(new File(gitPath));
-        context.setSourceRepoLocations(Repository.svnRepositoryLocations(svnPath));
+        context.setSourceRepoLocations(Repository.svnRepositoryLocations(svnPath
+                ,this.migrationConfig.getSourcesDirectory()));
         return context;
     }
 
