@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 
 import com.acidmanic.utility.unirebase.models.RepositoryLocations;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Repository {
 
@@ -45,5 +47,21 @@ public class Repository {
     }
 
 
+    public static List<Class<? extends SourceControlService>> listPresentRepositories(File root){
+        List<Class<? extends SourceControlService>> ret = new ArrayList<>();
+        
+        File svnDb = root.toPath().resolve(".svn").toFile();
+        File gitDb = root.toPath().resolve(".git").toFile();
+        
+        if(svnDb.exists()){
+            ret.add(SvnService.class);
+        }
+        
+        if(gitDb.exists()){
+            ret.add(GitService.class);
+        }
+        
+        return ret;
+    }
 
 }

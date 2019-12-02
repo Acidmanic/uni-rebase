@@ -8,9 +8,7 @@ import com.acidmanic.utility.unirebase.models.SCId;
 
 public interface SourceControlService {
 
-
-
-
+    public static final SourceControlService NULL = new NullSourceControlService(new File("."));
 
     void recallProjectState(SCId id) throws Exception;
 

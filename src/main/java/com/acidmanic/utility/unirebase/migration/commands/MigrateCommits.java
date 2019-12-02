@@ -11,7 +11,6 @@ import com.acidmanic.utility.unirebase.services.HistoryHelper;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import java.io.File;
-import java.util.List;
 
 public class MigrateCommits implements MigrationCommand {
 

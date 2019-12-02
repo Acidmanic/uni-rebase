@@ -5,11 +5,13 @@ import com.acidmanic.utility.unirebase.commitconversion.DefaultCommitRefiner;
 import com.acidmanic.utility.unirebase.commitmessageformatter.CommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.DefaultCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
+import com.acidmanic.utility.unirebase.services.GitService;
+import com.acidmanic.utility.unirebase.services.SourceControlService;
 
 public class MigrationConfig {
 
 
-    public static final MigrationConfig Default = new MigrationConfig("trunk", new DefaultCommitRefiner(), new DefaultCommitMessageFormatter());
+    public static final MigrationConfig Default = new MigrationConfig("trunk",GitService.class, new DefaultCommitRefiner(), new DefaultCommitMessageFormatter());
 
 
 
@@ -36,6 +38,8 @@ public class MigrationConfig {
         this.username = username;
     }
 
+    
+    private Class<? extends SourceControlService> destinationRepositoryType;
     private String sourcesDirectory;
     private CommitRefiner commitRefiner;
     private CommitMessageFormatter CommitMessageFormatter;
@@ -68,17 +72,22 @@ public class MigrationConfig {
         CommitMessageFormatter = commitMessageFormatter;
     }
 
-    public MigrationConfig(String sourcesDirectory, CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
+    public MigrationConfig(String sourcesDirectory,Class<? extends SourceControlService> destinationType
+            , CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
+        this.destinationRepositoryType = destinationType;
         this.sourcesDirectory = sourcesDirectory;
         this.commitRefiner = commitRefiner;
         this.CommitMessageFormatter = CommitMessageFormatter;
     }
 
 
-    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat){
-        return new MigrationConfig("trunk", new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
+    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat, Class<? extends SourceControlService> destination){
+        return new MigrationConfig("trunk", destination, new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
     }
 
+    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat){
+        return new MigrationConfig("trunk", GitService.class, new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
+    }
 	public SCId getLastCommitedId() {
 		return this.lastCommitedId;
     }
@@ -86,5 +95,15 @@ public class MigrationConfig {
     public void setLastCommitedId(SCId lastCommitedId) {
         this.lastCommitedId = lastCommitedId;
     }
+
+    public Class<? extends SourceControlService> getDestinationRepositoryType() {
+        return destinationRepositoryType;
+    }
+
+    public void setDestinationRepositoryType(Class<? extends SourceControlService> destinationRepositoryType) {
+        this.destinationRepositoryType = destinationRepositoryType;
+    }
+    
+    
     
 }

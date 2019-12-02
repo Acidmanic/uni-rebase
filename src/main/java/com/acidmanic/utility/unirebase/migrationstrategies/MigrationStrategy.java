@@ -7,13 +7,35 @@ import java.util.function.Consumer;
 import com.acidmanic.commandline.utility.CaseConvertor;
 import com.acidmanic.utility.unirebase.migration.MigrationCommand;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
-import com.acidmanic.utility.unirebase.services.SourceControlService;
 
 public abstract class MigrationStrategy {
 
     private List<Class<? extends MigrationCommand>> migrationSteps = new ArrayList<>();
+    
+    protected class StrategyBuilder{
+        private List<Class<? extends MigrationCommand>> commands;
 
-    protected abstract void onConfigureSteps(List<Class<? extends MigrationCommand>> steps);
+        public StrategyBuilder(List<Class<? extends MigrationCommand>> commands) {
+            this.commands = commands;
+        }
+        
+        public StrategyBuilder first(Class<? extends MigrationCommand> command){
+            
+            this.commands.clear();
+            
+            this.commands.add(command);
+            
+            return this;
+        }
+        
+        public StrategyBuilder then(Class<? extends MigrationCommand> command){
+            this.commands.add(command);
+            
+            return this;
+        }
+    }
+    
+    protected abstract void onConfigureSteps(StrategyBuilder builder);
 
     private Consumer<String> logger = (text) -> {};
 
@@ -58,7 +80,7 @@ public abstract class MigrationStrategy {
     }
 
     public MigrationStrategy() {
-        onConfigureSteps(this.migrationSteps);
+        onConfigureSteps(new StrategyBuilder(this.migrationSteps));
     }
 
     
