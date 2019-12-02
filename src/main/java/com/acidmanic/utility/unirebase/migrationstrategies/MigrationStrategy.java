@@ -27,6 +27,8 @@ public abstract class MigrationStrategy {
         this.logger.accept("Migration Strategy: " + config.getMigrationStrategy().getClass().getSimpleName());
         
         this.logger.accept("Force Clean: " + config.isForceClean());
+        
+        this.logger.accept("Commit Message Formatter: " + config.getCommitMessageFormatter().getClass().getSimpleName());
     }
     
     protected class StrategyBuilder{

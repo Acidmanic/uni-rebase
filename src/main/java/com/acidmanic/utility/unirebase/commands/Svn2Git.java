@@ -83,7 +83,7 @@ public class Svn2Git extends CommandBase {
             
             if(isParameterProvided("user-name")) config.setUsername(getParameterValue("user-name"));
 
-            if(isParameterProvided("password")) config.setUsername(getParameterValue("password"));
+            if(isParameterProvided("password")) config.setPassword(getParameterValue("password"));
 
             config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_SVN));
 
