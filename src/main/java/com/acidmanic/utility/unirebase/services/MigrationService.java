@@ -17,6 +17,8 @@ public class MigrationService {
         MigrationStrategy strategy = this.migrationConfig.getMigrationStrategy();
 
         MigrationContext context = createSvnToGitContext(svnPath, gitPath);
+        
+        strategy.setLogger(this.logger);
 
         strategy.execute(context);
     }
