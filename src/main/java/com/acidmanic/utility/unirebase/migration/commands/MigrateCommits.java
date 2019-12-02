@@ -27,7 +27,7 @@ public class MigrateCommits implements MigrationCommand {
         try {
             allCommits = source.listAllCommits();
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
+            context.getLogger().accept("Problem getting commits list: " + e1.getMessage());
             return;
         }
         
@@ -51,7 +51,7 @@ public class MigrateCommits implements MigrationCommand {
            try {
                 migrateSvn2Git(source,destination,commit,context,progress);
            } catch (Exception e) {
-               e=e;
+               context.getLogger().accept("Problem migrating commit: " + e.getMessage());
            }
         }
         
@@ -71,7 +71,7 @@ public class MigrateCommits implements MigrationCommand {
         SCId id = commit.getIdentifier();
 
         if(id.isEmpty()) {
-            System.out.println("Wrn: skipped non-existing commit: " + id.toString());
+            context.getLogger().accept("Wrn: skipped non-existing commit: " + id.toString());
             return;
         }
 
@@ -115,7 +115,7 @@ public class MigrateCommits implements MigrationCommand {
         try {
             fs.copyContent(src, dst);
         } catch (Exception ex) {
-            //TODO: add to log
+            context.getLogger().accept("Problem copying files: " + ex.getMessage());
         }
     }
 

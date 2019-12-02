@@ -22,7 +22,9 @@ public class CopySourceRepoDbToDestinationDirectory implements MigrationCommand 
             fs.copyContent(context.getSourceRepoLocations().getDatabseDir()
                       ,context.getUpdateRepoLocations().getDatabseDir());
                       
-        } catch (Exception e) {        }
+        } catch (Exception e) {     
+            context.getLogger().accept("Problem Copying files: " + e.getMessage());
+        }
 
         
         

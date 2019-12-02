@@ -8,12 +8,12 @@ package com.acidmanic.utility.unirebase.migration.commands;
 import com.acidmanic.utility.unirebase.migration.MigrationCommand;
 import com.acidmanic.utility.unirebase.models.MigrationContext;
 import com.acidmanic.utility.unirebase.services.GitService;
-import com.acidmanic.utility.unirebase.services.NullSourceControlService;
 import com.acidmanic.utility.unirebase.services.Repository;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import com.acidmanic.utility.unirebase.services.SourceControlServiceBuilder;
 import com.acidmanic.utility.unirebase.services.SvnService;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
@@ -21,8 +21,14 @@ import java.util.List;
  */
 public class AutoSetSourceControlServiceBuilders implements MigrationCommand {
 
+    
+    
+    private Consumer<String> logger = (text) -> {};
+    
     @Override
     public void execute(MigrationContext context) {
+        
+        this.logger = context.getLogger();
         
         SourceControlServiceBuilder updater = getUpdaterRepoBuilder(context);
         
@@ -73,6 +79,8 @@ public class AutoSetSourceControlServiceBuilders implements MigrationCommand {
         try {
             return func.run();
         } catch (Exception e) {
+            this.logger.accept("Problem creating SourceControlServiceBuilder: " 
+                +e.getMessage());
         }
         return defValue;
     }
