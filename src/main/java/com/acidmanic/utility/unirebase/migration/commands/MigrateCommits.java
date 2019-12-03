@@ -108,6 +108,12 @@ public class MigrateCommits implements MigrationCommand {
         if(fs.sameLocation(src, dst)){
             return;
         }
+
+        try {
+            fs.deleteContent(dst,new String[]{".git",".svn"});
+        } catch (Exception ex) {
+            context.getLogger().accept("Problem clearing destination: " + ex.getMessage());
+        }
         
         try {
             fs.copyContent(src, dst);

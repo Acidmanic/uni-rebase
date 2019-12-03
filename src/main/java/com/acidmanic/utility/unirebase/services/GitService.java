@@ -3,7 +3,6 @@ package com.acidmanic.utility.unirebase.services;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
 import com.acidmanic.utility.unirebase.models.CommitData;
@@ -11,10 +10,8 @@ import com.acidmanic.utility.unirebase.models.SCId;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.omg.PortableInterceptor.ObjectIdHelper;
 
 public class GitService implements SourceControlService {
 
