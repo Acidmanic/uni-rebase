@@ -69,7 +69,7 @@ public abstract class MigrationStrategy {
 
             MigrationCommand command = instanciate(step);
             
-            logger.accept("Step: " + convertor.pascalToSnake(step.getSimpleName().replace("-", " ")));
+            logger.accept("Step: " + convertor.pascalToSnake(step.getSimpleName().replaceAll("-", " ")));
 
             command.execute(context);
         }
