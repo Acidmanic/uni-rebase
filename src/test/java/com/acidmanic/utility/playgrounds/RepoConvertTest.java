@@ -33,6 +33,8 @@ public class RepoConvertTest {
         config.setUsername(Debug.read("username"));
 
         config.setPassword(Debug.read("password"));
+        
+        config.setSourcesDirectory(".");
 
         MigrationService migrationService = new MigrationService(config);
 
