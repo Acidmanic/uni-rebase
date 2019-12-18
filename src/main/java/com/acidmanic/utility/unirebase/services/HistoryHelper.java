@@ -31,11 +31,11 @@ public class HistoryHelper {
         });
     }
 
-    public static int skipToIndex(ArrayList<CommitData> allEntries, SCId fromId) {
+    public static int skipToIndex(List<CommitData> allEntries, SCId fromId) {
         return skipToIndex(allEntries, fromId, (a,b) -> a.getId().compareTo(b.getId()));
     }
     
-    private static int skipToIndex(ArrayList<CommitData> allEntries
+    private static int skipToIndex(List<CommitData> allEntries
                                    , SCId fromId
                                    , Comparator<SCId> comparator) {
         if (fromId.isFirst()) {

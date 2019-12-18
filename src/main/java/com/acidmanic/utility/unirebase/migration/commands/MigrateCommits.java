@@ -35,7 +35,7 @@ public class MigrateCommits implements MigrationCommand {
         SourceControlService destination=context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
         
-        HistoryHelper.sort(allCommits);
+        
 
         SCId fromId = getLastCommit(context,progress);
         

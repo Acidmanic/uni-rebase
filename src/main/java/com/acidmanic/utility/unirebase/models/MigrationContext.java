@@ -2,6 +2,7 @@ package com.acidmanic.utility.unirebase.models;
 
 import java.io.File;
 
+import com.acidmanic.utility.unirebase.services.InMemoryObjectStorage;
 import com.acidmanic.utility.unirebase.services.SourceControlServiceBuilder;
 import java.util.function.Consumer;
 
@@ -22,6 +23,8 @@ public class MigrationContext {
     private SourceControlServiceBuilder commitServiceBuilder;
     
     private Consumer<String> logger = (text) ->{};
+
+    private InMemoryObjectStorage dStorage = new InMemoryObjectStorage();
 
     public RepositoryLocations getSourceRepoLocations() {
         return sourceRepoLocations;
@@ -91,6 +94,8 @@ public class MigrationContext {
         this.logger = logger;
     }
 
-    
+    public InMemoryObjectStorage dataStorage(){
+        return this.dStorage;
+    }
 
 }
