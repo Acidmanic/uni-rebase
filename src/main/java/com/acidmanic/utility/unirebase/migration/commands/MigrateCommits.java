@@ -64,8 +64,8 @@ public class MigrateCommits implements MigrationCommand {
     }
 
 
-    private void migrateSvn2Git(SourceControlService svn 
-                               ,SourceControlService git
+    private void migrateSvn2Git(SourceControlService src 
+                               ,SourceControlService dst
                                ,CommitData commit
                                ,MigrationContext context
                                ,MigrationProgress progress) throws Exception {
@@ -77,7 +77,7 @@ public class MigrateCommits implements MigrationCommand {
             return;
         }
 
-        svn.recallProjectState(id);
+        src.recallProjectState(id);
         
         syncIfNotTheSame(context);
 
@@ -89,7 +89,7 @@ public class MigrateCommits implements MigrationCommand {
             config.getCommitMessageFormatter().format(commit)
         );
 
-        git.acceptAllChanges(commit);
+        dst.acceptAllChanges(commit);
         
         progress.setLastCommit(commit.getIdentifier());
         
