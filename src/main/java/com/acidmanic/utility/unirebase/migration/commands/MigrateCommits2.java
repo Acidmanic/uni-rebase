@@ -11,7 +11,9 @@ public class MigrateCommits2 extends MigrationStrategy  implements MigrationComm
         builder.first(SetSourceSourceController.class)
                 .then(GetAllCommits.class)
                 .then(FigureStartingCommit.class)
-                .then(SetDestinationSourceController.class);
+                .then(SetDestinationSourceController.class)
+                .then(LoopThroughAndConvert.class)
+                .then(DisposeServices.class);
     }
 
 }
