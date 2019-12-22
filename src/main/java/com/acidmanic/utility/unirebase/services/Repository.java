@@ -9,18 +9,21 @@ import java.util.List;
 
 public class Repository {
 
+    public static final String DBDIR_SVN = ".svn";
+    public static final String DBDIR_GIT = ".git";
+    
 
 
     public static RepositoryLocations gitRepositoryLocations(String rootDirectory){
-        return getRepositoryLocations(rootDirectory,".git");
+        return getRepositoryLocations(rootDirectory,DBDIR_GIT);
     }
 
     public static RepositoryLocations svnRepositoryLocations(String rootDirectory){
-        return getRepositoryLocations(rootDirectory,".svn");
+        return getRepositoryLocations(rootDirectory,DBDIR_SVN);
     }
     
     public static RepositoryLocations svnRepositoryLocations(String rootDirectory,String trunk){
-        RepositoryLocations ret = getRepositoryLocations(rootDirectory,".svn");
+        RepositoryLocations ret = getRepositoryLocations(rootDirectory,DBDIR_SVN);
         
         ret.setSourcesDir(ret.getSourcesDir().toPath().resolve(trunk).toFile());
         
@@ -58,8 +61,8 @@ public class Repository {
     public static List<Class<? extends SourceControlService>> listPresentRepositories(File root){
         List<Class<? extends SourceControlService>> ret = new ArrayList<>();
         
-        File svnDb = root.toPath().resolve(".svn").toFile();
-        File gitDb = root.toPath().resolve(".git").toFile();
+        File svnDb = root.toPath().resolve(DBDIR_SVN).toFile();
+        File gitDb = root.toPath().resolve(DBDIR_GIT).toFile();
         
         if(svnDb.exists()){
             ret.add(SvnService.class);
