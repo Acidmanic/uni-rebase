@@ -1,5 +1,6 @@
 package com.acidmanic.utility.unirebase.services;
 
+import com.acidmanic.utility.unirebase.models.MigrationContext;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -111,7 +112,7 @@ public class FilesystemService {
         file.delete();
     }
 
-    public void deleteContent(File dir, String...ignoreList) {
+    public void deleteContent(File dir, String... ignoreList) {
         File[] subs = dir.listFiles();
 
         for (File sub : subs) {
@@ -213,5 +214,29 @@ public class FilesystemService {
             ret = ret.resolve(path[i]);
         }
         return ret.toFile();
+    }
+
+    /**
+     * This will sync content of the destination with source, after a successful
+     * run, the content of destination folder would be the same as the source
+     * directory. If both src and dst are pointing to the same location, the
+     * method will do nothing.
+     *
+     * @param src Source directory
+     * @param dst Destination directory
+     * @param ignoreList The list of Files/Directories which will be ignored.
+     * these content will not be copied or removed.
+     * @throws Exception
+     */
+    public void sync(File src, File dst, String... ignoreList) throws Exception {
+
+        if (sameLocation(src, dst)) {
+            return;
+        }
+
+        deleteContent(dst, ignoreList);
+
+        copyContent(src, dst, ignoreList);
+
     }
 }

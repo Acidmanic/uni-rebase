@@ -14,6 +14,7 @@ import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import static com.acidmanic.utility.unirebase.services.Repository.DBDIR_GIT;
 import static com.acidmanic.utility.unirebase.services.Repository.DBDIR_SVN;
+import com.acidmanic.utility.unirebase.services.SafeRunner;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import java.io.File;
 import java.util.List;
@@ -89,25 +90,14 @@ public class LoopThroughAndConvert implements MigrationCommand{
     }
     
     private void syncIfNotTheSame(MigrationContext context) {
-        FilesystemService fs = new FilesystemService();
+        
         File src = context.getUpdateRepoLocations().getSourcesDir();
+
         File dst = context.getCommitRepoLocations().getSourcesDir();
         
-        if(fs.sameLocation(src, dst)){
-            return;
-        }
-
-        try {
-            fs.deleteContent(dst,SC_DB_DIRS);
-        } catch (Exception ex) {
-            context.getLogger().accept("Problem clearing destination: " + ex.getMessage());
-        }
-        
-        try {
-            fs.copyContent(src, dst,SC_DB_DIRS);
-        } catch (Exception ex) {
-            context.getLogger().accept("Problem copying files: " + ex.getMessage());
-        }
+         new SafeRunner().describe("Problem Syncing " + src.toString())
+                 .log(context.getLogger())
+                 .run(()-> new FilesystemService().sync(src, dst, SC_DB_DIRS));
     }
     
 }
