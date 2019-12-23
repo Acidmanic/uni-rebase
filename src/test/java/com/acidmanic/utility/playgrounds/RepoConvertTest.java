@@ -34,7 +34,7 @@ public class RepoConvertTest {
 
         config.setPassword(Debug.read("password"));
         
-        config.setSourcesDirectory(".");
+        config.setSourcesDirectory(".svn");
 
         MigrationService migrationService = new MigrationService(config);
 

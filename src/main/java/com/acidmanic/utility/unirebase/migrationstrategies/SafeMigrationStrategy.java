@@ -5,7 +5,6 @@
  */
 package com.acidmanic.utility.unirebase.migrationstrategies;
 
-import com.acidmanic.utility.unirebase.migration.commands.AutoSetSourceControlServiceBuilders;
 import com.acidmanic.utility.unirebase.migration.commands.CheckForCleanOrResume;
 import com.acidmanic.utility.unirebase.migration.commands.MigrateCommits;
 import com.acidmanic.utility.unirebase.migration.commands.SetDestinationAsCommitRepo;
