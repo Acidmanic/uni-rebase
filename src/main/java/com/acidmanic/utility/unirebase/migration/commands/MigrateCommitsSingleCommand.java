@@ -14,6 +14,8 @@ import static com.acidmanic.utility.unirebase.services.Repository.*;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 import java.io.File;
 
+
+@Deprecated("Due to be fat class and violating SRP, this class is deprecated, use MigrateCommits instead")
 public class MigrateCommitsSingleCommand implements MigrationCommand {
 
     
