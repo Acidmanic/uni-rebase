@@ -12,18 +12,20 @@ import com.acidmanic.utility.unirebase.services.HistoryHelper;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
 import static com.acidmanic.utility.unirebase.services.Repository.*;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
-import java.io.File;
+import java.io.File; 
 
-
-@Deprecated("Due to be fat class and violating SRP, this class is deprecated, use MigrateCommits instead")
+/**
+ * 
+ * @author Mani Moayedi
+ * @deprecated Due to be fat class and violating SRP, this class is deprecated, use MigrateCommits instead
+ */
+@Deprecated()
 public class MigrateCommitsSingleCommand implements MigrationCommand {
 
-    
-    private static final String[] SC_DB_DIRS={DBDIR_GIT,DBDIR_SVN};
-    
-    
+    private static final String[] SC_DB_DIRS = {DBDIR_GIT, DBDIR_SVN};
+
     @Override
-    public void execute( MigrationContext context) {
+    public void execute(MigrationContext context) {
 
         SourceControlService source = context.getUpdateServiceBuilder().build(context.getUpdateRepoLocations().getQueryRootDir());
 
@@ -34,74 +36,69 @@ public class MigrateCommitsSingleCommand implements MigrationCommand {
             context.getLogger().accept("Problem getting commits list: " + e1.getMessage());
             return;
         }
-        
-        File progressFile = context.getProgressFile(); 
-        
+
+        File progressFile = context.getProgressFile();
+
         MigrationProgress progress = new MigrationProgress(progressFile);
-        
-        SourceControlService destination=context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
-        
-        
+        SourceControlService destination = context.getCommitServiceBuilder().build(context.getCommitRepoLocations().getQueryRootDir());
 
-        SCId fromId = getLastCommit(context,progress);
-        
-        int index =  HistoryHelper.skipToIndex(allCommits,fromId);
+        SCId fromId = getLastCommit(context, progress);
 
-        for(int i=index;i<allCommits.size();i++){
-            
+        int index = HistoryHelper.skipToIndex(allCommits, fromId);
+
+        for (int i = index; i < allCommits.size(); i++) {
+
             CommitData commit = allCommits.get(i);
 
-           try {
-                migrateSvn2Git(source,destination,commit,context,progress);
-           } catch (Exception e) {
-               context.getLogger().accept("Problem migrating commit: " + e.getMessage());
-           }
+            try {
+                migrateSvn2Git(source, destination, commit, context, progress);
+            } catch (Exception e) {
+                context.getLogger().accept("Problem migrating commit: " + e.getMessage());
+            }
         }
-        
+
         source.dispose();
-        
+
         destination.dispose();
-        
+
     }
 
-
-    private void migrateSvn2Git(SourceControlService src 
-                               ,SourceControlService dst
-                               ,CommitData commit
-                               ,MigrationContext context
-                               ,MigrationProgress progress) throws Exception {
+    private void migrateSvn2Git(SourceControlService src,
+             SourceControlService dst,
+             CommitData commit,
+             MigrationContext context,
+             MigrationProgress progress) throws Exception {
 
         SCId id = commit.getIdentifier();
 
-        if(id.isEmpty()) {
+        if (id.isEmpty()) {
             context.getLogger().accept("Wrn: skipped non-existing commit: " + id.toString());
             return;
         }
 
         src.recallProjectState(id);
-        
+
         syncIfNotTheSame(context);
 
         MigrationConfig config = context.getConfig();
-        
+
         commit = config.getCommitRefiner().refine(commit);
 
         commit.setMessage(
-            config.getCommitMessageFormatter().format(commit)
+                config.getCommitMessageFormatter().format(commit)
         );
 
         dst.acceptAllChanges(commit);
-        
+
         progress.setLastCommit(commit.getIdentifier());
-        
+
     }
 
-
     private SCId getLastCommit(MigrationContext context, MigrationProgress progress) {
-        
+
         SCId ret = progress.getLastCommit();
-        if(ret != null){
+        if (ret != null) {
             return ret;
         }
         return context.getConfig().getLastCommitedId();
@@ -111,19 +108,19 @@ public class MigrateCommitsSingleCommand implements MigrationCommand {
         FilesystemService fs = new FilesystemService();
         File src = context.getUpdateRepoLocations().getSourcesDir();
         File dst = context.getCommitRepoLocations().getSourcesDir();
-        
-        if(fs.sameLocation(src, dst)){
+
+        if (fs.sameLocation(src, dst)) {
             return;
         }
 
         try {
-            fs.deleteContent(dst,SC_DB_DIRS);
+            fs.deleteContent(dst, SC_DB_DIRS);
         } catch (Exception ex) {
             context.getLogger().accept("Problem clearing destination: " + ex.getMessage());
         }
-        
+
         try {
-            fs.copyContent(src, dst,SC_DB_DIRS);
+            fs.copyContent(src, dst, SC_DB_DIRS);
         } catch (Exception ex) {
             context.getLogger().accept("Problem copying files: " + ex.getMessage());
         }
