@@ -9,7 +9,6 @@ import com.acidmanic.utility.unirebase.models.CommitData;
 import com.acidmanic.utility.unirebase.models.SCId;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -20,7 +19,6 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
-import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.DefaultSVNRepositoryPool;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -184,11 +182,13 @@ public class SvnService implements SourceControlService {
 
     @Override
     public void initialize() throws Exception {
-        throw new NotImplementedYetException();
+        System.err.println("TODO: Implement Initialization");
     }
 
     @Override
     public boolean isRepo() {
         return this.repoFile.toPath().resolve(".svn").toFile().exists();
     }
+
+   
 }

@@ -33,8 +33,6 @@ public class GitService implements SourceControlService {
 
         if (this.repoGitDirectory.exists()) {
             this.git = Git.open(this.repoGitDirectory);
-        } else {
-            this.init();
         }
 
     }
@@ -44,7 +42,6 @@ public class GitService implements SourceControlService {
     }
 
     private void addAll(Git git, File repo) throws Exception {
-
 
         Status status = git.status().call();
 
@@ -68,7 +65,7 @@ public class GitService implements SourceControlService {
                 git.add().addFilepattern(item).call();
             }
         }
-        
+
         for (String item : removed) {
             if (gitIgnoreFile.isIgnored(item)) {
                 System.out.println(item + " has been ignored");
@@ -91,20 +88,19 @@ public class GitService implements SourceControlService {
         this.git.commit().setMessage(commit.getMessage()).setCommitter(committer).setAuthor(committer).call();
     }
 
-    public void init() throws Exception {
-        Git.init().setDirectory(this.repoDirectory).call();
-
-        this.git = Git.open(this.repoGitDirectory);
-    }
-
+    @Override
     public File getRootDirectory() {
         return this.repoDirectory;
     }
 
+    @Override
     public boolean isRepo() {
         try {
-            this.git.status().call();
-            return true;
+            if (this.repoGitDirectory.exists()) {
+                this.git.status().call();
+                return true;
+            }
+
         } catch (Exception e) {
         }
 
@@ -125,15 +121,12 @@ public class GitService implements SourceControlService {
 
     @Override
     public ArrayList<CommitData> listAllCommits() throws Exception {
-        
-        ArrayList<CommitData> ret =  new ArrayList<>();
-        
-        
-        
-        Iterable<RevCommit> commits =  this.git.log().call();
+
+        ArrayList<CommitData> ret = new ArrayList<>();
+
+        Iterable<RevCommit> commits = this.git.log().call();
 
         commits.forEach(rev -> ret.add(convert(rev)));
-
 
         return ret;
     }
@@ -153,7 +146,7 @@ public class GitService implements SourceControlService {
         ret.setIdentifier(new SCId(SCId.SCID_TYPE_GIT, rev.getId().toString()));
 
         ret.setMessage(rev.getFullMessage());
-        
+
         return ret;
     }
 
@@ -168,12 +161,12 @@ public class GitService implements SourceControlService {
     public void ignore(File file) throws Exception {
         try {
             this.git.rm().addFilepattern(file.getPath()).call();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         GitIgnoreFile ignore = new GitIgnoreFile(this.repoDirectory);
 
         ignore.ignore(file);
-
 
     }
 
@@ -187,7 +180,7 @@ public class GitService implements SourceControlService {
 
     @Override
     public void acceptAllChanges(CommitData commit) throws Exception {
-        
+
         this.addAll(this.git, this.repoDirectory);
 
         this.commit(commit);
@@ -195,6 +188,11 @@ public class GitService implements SourceControlService {
 
     @Override
     public void initialize() throws Exception {
-        this.git = Git.init().setDirectory(this.repoDirectory).call();
+//        this.git = Git.init().setDirectory(this.repoDirectory).call();
+
+        Git.init().setDirectory(this.repoDirectory).call();
+
+        this.git = Git.open(this.repoGitDirectory);
+
     }
 }

@@ -12,11 +12,11 @@ public class MigrationService {
     private final MigrationConfig migrationConfig;
     private Consumer<String> logger = (text)->{};
 
-    public void migrateSvn2Git(String svnPath, String gitPath) throws Exception {
+    public void migrateSvn2Git(String srcPath, String dstPath) throws Exception {
      
         MigrationStrategy strategy = this.migrationConfig.getMigrationStrategy();
 
-        MigrationContext context = createSvnToGitContext(svnPath, gitPath);
+        MigrationContext context = createSvnToGitContext(srcPath, dstPath);
         
         strategy.setLogger(this.logger);
 
@@ -24,9 +24,9 @@ public class MigrationService {
     }
 
 
-    private MigrationContext createSvnToGitContext(String svnPath, String gitPath){
+    private MigrationContext createSvnToGitContext(String srcPath, String dstPath){
         
-        MigrationContext context = createContext(svnPath, gitPath);
+        MigrationContext context = createContext(srcPath, dstPath);
 
         context.setCommitServiceBuilder((dir) -> safeGitService(dir));
 

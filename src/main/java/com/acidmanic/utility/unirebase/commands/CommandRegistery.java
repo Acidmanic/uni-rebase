@@ -12,7 +12,9 @@ public class CommandRegistery {
     public static void register(){
 
 
-        ApplicationWideTypeRegistery.makeInstance().registerClass(Svn2Git.class);;
+        ApplicationWideTypeRegistery.makeInstance().registerClass(Svn2Git.class);
+        
+        ApplicationWideTypeRegistery.makeInstance().registerClass(Git2Git.class);
     }
 
 }

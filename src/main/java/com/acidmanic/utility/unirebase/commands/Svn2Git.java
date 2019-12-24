@@ -42,7 +42,7 @@ public class Svn2Git extends CommandBase {
         builder.named("svn-repo").described("the root directory of svn project.")
                .ofType(File.class).mandatory().indexAt(0)
         .newParam()
-               .named("git-destination-dir").described("the root directory of svn project.")
+               .named("git-destination-dir").described("the root directory of git project.")
                .ofType(File.class).mandatory().indexAt(1)
         .newParam()
                .named("authors-file").described("This is a text file containing names and emails of commiters. "+

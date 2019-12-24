@@ -27,5 +27,5 @@ public interface SourceControlService {
     public void initialize() throws Exception;
 
     public boolean isRepo();
-
+    
 }
