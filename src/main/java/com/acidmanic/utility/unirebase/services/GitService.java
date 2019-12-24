@@ -143,7 +143,7 @@ public class GitService implements SourceControlService {
 
         ret.setDate(author.getWhen());
 
-        ret.setIdentifier(new SCId(SCId.SCID_TYPE_GIT, rev.getId().toString()));
+        ret.setIdentifier(new SCId(SCId.SCID_TYPE_GIT, rev.getId().name()));
 
         ret.setMessage(rev.getFullMessage());
 
