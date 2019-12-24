@@ -113,10 +113,14 @@ public class GitService implements SourceControlService {
 
         fs.deleteContent(repoDirectory, new String[]{".git"});
 
-        this.git.checkout().addPath(".").call();
+        this.git.checkout().addPath(".").setAllPaths(true).call();
 
-        this.git.checkout().addPath(id.getGitHash()).call();
+        this.git.checkout().setName(id.getGitHash()).call();
+                
+        fs.deleteContent(repoDirectory, new String[]{".git"});
 
+        this.git.checkout().addPath(".").setAllPaths(true).call();
+        
     }
 
     @Override
