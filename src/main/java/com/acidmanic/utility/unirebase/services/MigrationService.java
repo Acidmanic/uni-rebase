@@ -1,6 +1,5 @@
 package com.acidmanic.utility.unirebase.services;
 
-import java.io.File;
 import java.util.function.Consumer;
 
 import com.acidmanic.utility.unirebase.migrationstrategies.MigrationStrategy;
@@ -10,71 +9,38 @@ import com.acidmanic.utility.unirebase.models.MigrationContext;
 public class MigrationService {
 
     private final MigrationConfig migrationConfig;
-    private Consumer<String> logger = (text)->{};
+    private Consumer<String> logger = (text) -> {
+    };
 
     public void migrateSvn2Git(String srcPath, String dstPath) throws Exception {
-     
+
+        MigrationContext context = new MigrationContextBuilder(this.logger)
+                .createSvnToGitContext(srcPath, dstPath,this.migrationConfig);
+
+        migrate(context);
+    }
+
+    public void migrateGit2Git(String srcPath, String dstPath) throws Exception {
+       
+       MigrationContext context = new MigrationContextBuilder(this.logger)
+                .createGitToGitContext(srcPath, dstPath,this.migrationConfig);
+        
+        migrate(context);
+    }
+
+    private void migrate( MigrationContext context) {
         MigrationStrategy strategy = this.migrationConfig.getMigrationStrategy();
 
-        MigrationContext context = createSvnToGitContext(srcPath, dstPath);
-        
         strategy.setLogger(this.logger);
 
         strategy.execute(context);
     }
 
-
-    private MigrationContext createSvnToGitContext(String srcPath, String dstPath){
-        
-        MigrationContext context = createContext(srcPath, dstPath);
-
-        context.setCommitServiceBuilder((dir) -> safeGitService(dir));
-
-        context.setUpdateServiceBuilder((dir) -> safeSvnService(dir));
-
-        return context;
-
-    }
-
-    private SourceControlService safeGitService(File dir) {
-        try {
-            return new GitService(dir);
-        } catch (Exception e) {}
-
-        this.logger.accept("Unable to create git repository at:" + dir.toString());
-
-        return null;
-    }
-
-    private SourceControlService safeSvnService(File dir) {
-        try {
-            if(this.migrationConfig.getUsername()!=null){
-                return new SvnService(dir, this.migrationConfig.getUsername(), this.migrationConfig.getPassword());
-            }
-            return new SvnService(dir);
-        } catch (Exception e) {}
-
-        this.logger.accept("Unable to create SVN repository at:" + dir.toString());
-        
-        return null;
-    }
-
-    private MigrationContext createContext(String svnPath, String gitPath) {
-        MigrationContext context = new MigrationContext();
-
-        context.setConfig(this.migrationConfig);
-        context.setDestinationDirectory(new File(gitPath));
-        context.setSourceRepoLocations(Repository.svnRepositoryLocations(svnPath
-                ,this.migrationConfig.getSourcesDirectory()));
-        context.setLogger(this.logger);
-        
-        return context;
-    }
+    
 
     public MigrationService() {
         this.migrationConfig = MigrationConfig.Default;
     }
-
 
     public MigrationService(MigrationConfig migrationConfig) {
         this.migrationConfig = migrationConfig;
@@ -92,6 +58,4 @@ public class MigrationService {
         this.logger = logger;
     }
 
-
-    
 }

@@ -1,14 +1,12 @@
 package com.acidmanic.utility.playgrounds;
 
 import com.acidmanic.utility.Debug;
-import com.acidmanic.utility.unirebase.commitconversion.AuthorsByLoginCommitRefiner;
 import com.acidmanic.utility.unirebase.models.MigrationConfig;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.MigrationService;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.GitService;
-import com.acidmanic.utility.unirebase.services.SvnService;
 
 public class GitToGitTest {
 
@@ -17,7 +15,7 @@ public class GitToGitTest {
         FilesystemService fs = new FilesystemService();
 
         String src = fs.getFile(Debug.DEVELOPE_DIR, "uni-rebase-git").toString();
-        String git = fs.getFile(Debug.DEVELOPE_DIR, "uni-rebase-out").toString();
+        String dst = fs.getFile(Debug.DEVELOPE_DIR, "uni-rebase-out").toString();
 
         MigrationConfig config = MigrationConfig.Default;
 
@@ -31,7 +29,7 @@ public class GitToGitTest {
 
         migrationService.setLogger((text) -> System.out.println(text));
 
-//        migrationService.migrateSvn2Git(svn, git);
+        migrationService.migrateGit2Git(src, dst);
 
         System.out.println("DONE");
 
