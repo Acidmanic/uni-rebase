@@ -45,7 +45,7 @@ public class MigrationContextBuilder {
 
         context.setCommitServiceBuilder((dir) -> safeGitService(dir,config));
 
-        context.setUpdateServiceBuilder((dir) -> safeSvnService(dir,config));
+        context.setUpdateServiceBuilder((dir) -> safeGitService(dir,config));
 
         return context;
     }

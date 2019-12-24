@@ -24,6 +24,8 @@ public class GitToGitTest {
         config.setLastCommitedId(SCId.createFirst(SCId.SCID_TYPE_GIT));
 
         config.setDestinationRepositoryType(GitService.class);
+        
+        config.setSourcesDirectory(".");
 
         MigrationService migrationService = new MigrationService(config);
 
