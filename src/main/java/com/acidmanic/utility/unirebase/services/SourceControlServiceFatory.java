@@ -15,58 +15,53 @@ import java.util.List;
  * @author 80116
  */
 public class SourceControlServiceFatory {
-    
-    
+
     private List<Constructor<SourceControlService>> constructors;
-    
+
     private static SourceControlServiceFatory instance = null;
-    
-    
-    public static synchronized SourceControlServiceFatory getInstance(){
-        if(instance == null ){
+
+    public static synchronized SourceControlServiceFatory getInstance() {
+        if (instance == null) {
             instance = new SourceControlServiceFatory();
         }
-        
+
         return instance;
     }
-    
-    
-    
-    private SourceControlServiceFatory(){
-        
-        
+
+    private SourceControlServiceFatory() {
+
         this.constructors = new ArrayList<>();
-        
-        Class[] classes = Reflection.getClasses(this);
-        
-        for(Class c: classes){
-            if(Reflection.doesImplement(c, SourceControlService.class)){
+
+        Class[] classes = Reflection.getClasses();
+
+        for (Class c : classes) {
+            if (Reflection.doesImplement(c, SourceControlService.class)) {
                 try {
                     Constructor<SourceControlService> cons = c.getConstructor(File.class);
-                    
-                    if(cons != null){
+
+                    if (cons != null) {
                         this.constructors.add(cons);
                     }
-                    
-                } catch (Exception ex) {} 
+
+                } catch (Exception ex) {
+                }
             }
         }
     }
-    
-    
-    public SourceControlService make(File projectRoot){
-        
-        for(Constructor<SourceControlService> cons : this.constructors){
-            
+
+    public SourceControlService make(File projectRoot) {
+
+        for (Constructor<SourceControlService> cons : this.constructors) {
+
             try {
                 SourceControlService service = cons.newInstance(projectRoot);
-                
-                if (service != null  &&  service.isRepo()){
+
+                if (service != null && service.isRepo()) {
                     return service;
                 }
             } catch (Exception e) {
             }
-            
+
         }
         return new NullSourceControlService(projectRoot);
     }

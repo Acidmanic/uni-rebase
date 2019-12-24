@@ -20,42 +20,51 @@ public class Reflection {
 
     public static boolean doesImplement(Class type, Class iface) {
         Class[] interfaces = type.getInterfaces();
-        
-        for(Class i:interfaces){
-            if(i.equals(iface)){
+
+        for (Class i : interfaces) {
+            if (i.equals(iface)) {
                 return true;
             }
         }
-        
-        
+
         Class parent = type.getSuperclass();
-        
-        if(parent != null){
+
+        if (parent != null) {
             return doesImplement(parent, iface);
         }
-        
+
         return false;
     }
 
-    public static Class[] getClasses(Object caller) {
-        try {
-            //TODO: this is weak!
-            return getClasses(caller.getClass().getPackage().getName());
-        } catch (Exception ex) {
-            return new Class[]{};
+    public static Class[] getClasses() {
+
+        Package[] packages = Package.getPackages();
+
+        List<Class> all = new ArrayList<>();
+        
+        for (Package p : packages) {
+            try {
+                ArrayList<Class> classes = getClasses(p.getName());
+                
+                all.addAll(classes);
+                
+            } catch (Exception e) {}
+
         }
+
+        return all.toArray(new Class[all.size()]);
     }
 
     /**
      * Scans all classes accessible from the context class loader which belong
-     * to the given package and subpackages.
+     * to the given package and sub-packages.
      *
      * @param packageName The base package
      * @return The classes
      * @throws ClassNotFoundException
      * @throws IOException
      */
-    public static Class[] getClasses(String packageName)
+    public static ArrayList<Class> getClasses(String packageName)
             throws ClassNotFoundException, IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         assert classLoader != null;
@@ -70,7 +79,8 @@ public class Reflection {
         for (File directory : dirs) {
             classes.addAll(findClasses(directory, packageName));
         }
-        return classes.toArray(new Class[classes.size()]);
+        
+        return classes;
     }
 
     /**
