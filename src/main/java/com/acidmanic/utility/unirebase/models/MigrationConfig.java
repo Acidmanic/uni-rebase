@@ -5,10 +5,11 @@ import com.acidmanic.utility.unirebase.commitconversion.DefaultCommitRefiner;
 import com.acidmanic.utility.unirebase.commitmessageformatter.CommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.DefaultCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
-import com.acidmanic.utility.unirebase.migrationstrategies.InDestinationSvnToGitStrategy;
 import com.acidmanic.utility.unirebase.migrationstrategies.MigrationStrategy;
 import com.acidmanic.utility.unirebase.migrationstrategies.SafeMigrationStrategy;
+import com.acidmanic.utility.unirebase.services.DefaultPreCommitAction;
 import com.acidmanic.utility.unirebase.services.GitService;
+import com.acidmanic.utility.unirebase.services.PreCommitAction;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 
 public class MigrationConfig {
@@ -50,6 +51,7 @@ public class MigrationConfig {
     private String username = null;
     private String password = null;
     private MigrationStrategy migrationStrategy = new SafeMigrationStrategy();
+    private PreCommitAction preCommitAction = new DefaultPreCommitAction();
     private boolean forceClean = false;
 
     public String getSourcesDirectory() {
@@ -123,6 +125,13 @@ public class MigrationConfig {
     public void setForceClean(boolean forceClean) {
         this.forceClean = forceClean;
     }
-    
+
+    public PreCommitAction getPreCommitAction() {
+        return preCommitAction;
+    }
+
+    public void setPreCommitAction(PreCommitAction preCommitAction) {
+        this.preCommitAction = preCommitAction;
+    }
     
 }

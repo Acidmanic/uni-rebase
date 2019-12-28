@@ -12,6 +12,7 @@ import com.acidmanic.utility.unirebase.models.MigrationContext;
 import com.acidmanic.utility.unirebase.models.SCId;
 import com.acidmanic.utility.unirebase.services.FilesystemService;
 import com.acidmanic.utility.unirebase.services.MigrationProgress;
+import com.acidmanic.utility.unirebase.services.PreCommitHelperToolset;
 import static com.acidmanic.utility.unirebase.services.Repository.DBDIR_GIT;
 import static com.acidmanic.utility.unirebase.services.Repository.DBDIR_SVN;
 import com.acidmanic.utility.unirebase.services.SafeRunner;
@@ -28,6 +29,7 @@ public class LoopThroughAndConvert implements MigrationCommand{
     
     
     private static final String[] SC_DB_DIRS={DBDIR_GIT,DBDIR_SVN};
+    private PreCommitHelperToolset helperToolset = new PreCommitHelperToolset();
     
     @Override
     public void execute(MigrationContext context) {
@@ -39,23 +41,9 @@ public class LoopThroughAndConvert implements MigrationCommand{
         
         List<CommitData> commits = context.dataStorage().get(GetAllCommits.class);
         
-        commits.forEach( commit -> migrateSingleCommitNoException(src, dst, commit, context, progress));
-    }
-    
-    private void migrateSingleCommitNoException(SourceControlService src 
-                               ,SourceControlService dst
-                               ,CommitData commit
-                               ,MigrationContext context
-                               ,MigrationProgress progress){
+        SafeRunner runner = new SafeRunner().describe("[ERROR] Migrating Commit.").log(context.getLogger());
         
-        try {
-            migrateSingleCommit(src, dst, commit, context, progress);
-        } catch (Exception e) {
-            context.getLogger().accept("Wrn: Error Migrating commit:" 
-                    + commit.getIdentifier().getId() + " : " +
-                    commit.getMessage() + "\n"
-                    + "Bacause of " + e.getClass().getSimpleName()) ;
-        }
+        commits.forEach( commit -> runner.run(()->migrateSingleCommit(src, dst, commit, context, progress)));
     }
     
     private void migrateSingleCommit(SourceControlService src 
@@ -83,6 +71,10 @@ public class LoopThroughAndConvert implements MigrationCommand{
             config.getCommitMessageFormatter().format(commit)
         );
 
+        config.getPreCommitAction().onPreCommit(this.helperToolset, 
+                context.getCommitRepoLocations().getSourcesDir(), 
+                context.getLogger(), commit, config.getCommitMessageFormatter());
+        
         dst.acceptAllChanges(commit);
         
         progress.setLastCommit(commit.getIdentifier());
