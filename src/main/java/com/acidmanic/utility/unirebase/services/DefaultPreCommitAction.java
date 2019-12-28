@@ -19,6 +19,8 @@ public class DefaultPreCommitAction implements PreCommitAction{
     @Override
     public void onPreCommit(PreCommitHelperToolset helpers, File sourceDirectory, Consumer<String> logger, CommitData commit, CommitMessageFormatter formatter) {
         logger.accept("PreCommit");
+        logger.accept("Destination directory: " + sourceDirectory.getAbsolutePath());
+        logger.accept("Commit: " + commit.getIdentifier().getId() + "    " + commit.getMessage());
     }
     
 }

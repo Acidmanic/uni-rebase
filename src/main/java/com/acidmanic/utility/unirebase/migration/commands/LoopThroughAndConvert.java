@@ -29,7 +29,7 @@ public class LoopThroughAndConvert implements MigrationCommand{
     
     
     private static final String[] SC_DB_DIRS={DBDIR_GIT,DBDIR_SVN};
-    private PreCommitHelperToolset helperToolset = new PreCommitHelperToolset();
+    private final PreCommitHelperToolset helperToolset = new PreCommitHelperToolset();
     
     @Override
     public void execute(MigrationContext context) {
