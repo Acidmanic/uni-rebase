@@ -7,9 +7,9 @@ import com.acidmanic.utility.unirebase.commitmessageformatter.DefaultCommitMessa
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.migrationstrategies.MigrationStrategy;
 import com.acidmanic.utility.unirebase.migrationstrategies.SafeMigrationStrategy;
-import com.acidmanic.utility.unirebase.services.DefaultPreCommitAction;
+import com.acidmanic.utility.unirebase.precommitactions.Log;
 import com.acidmanic.utility.unirebase.services.GitService;
-import com.acidmanic.utility.unirebase.services.PreCommitAction;
+import com.acidmanic.utility.unirebase.precommitactions.PreCommitAction;
 import com.acidmanic.utility.unirebase.services.SourceControlService;
 
 public class MigrationConfig {
@@ -51,7 +51,7 @@ public class MigrationConfig {
     private String username = null;
     private String password = null;
     private MigrationStrategy migrationStrategy = new SafeMigrationStrategy();
-    private PreCommitAction preCommitAction = new DefaultPreCommitAction();
+    private PreCommitAction preCommitAction = new Log();
     private boolean forceClean = false;
 
     public String getSourcesDirectory() {

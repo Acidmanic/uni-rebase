@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.acidmanic.utility.unirebase.services;
+package com.acidmanic.utility.unirebase.precommitactions;
 
 import com.acidmanic.utility.unirebase.commitmessageformatter.CommitMessageFormatter;
 import com.acidmanic.utility.unirebase.models.CommitData;
+import com.acidmanic.utility.unirebase.services.PreCommitHelperToolset;
 import java.io.File;
 import java.util.function.Consumer;
 
