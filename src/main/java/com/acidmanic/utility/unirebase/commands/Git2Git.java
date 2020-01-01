@@ -7,7 +7,6 @@ package com.acidmanic.utility.unirebase.commands;
 
 import com.acidmanic.commandline.commands.CommandBase;
 import com.acidmanic.commandline.commands.parameters.ParameterBuilder;
-import com.acidmanic.utility.unirebase.commitconversion.AuthorsByLoginCommitRefiner;
 import com.acidmanic.utility.unirebase.commitmessageformatter.CommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.DefaultCommitMessageFormatter;
 import com.acidmanic.utility.unirebase.commitmessageformatter.StringCommitMessageFormatter;
