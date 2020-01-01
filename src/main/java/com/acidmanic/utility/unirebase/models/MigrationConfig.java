@@ -14,17 +14,22 @@ import com.acidmanic.utility.unirebase.services.SourceControlService;
 
 public class MigrationConfig {
 
+    public static final MigrationConfig Default = new MigrationConfig("trunk", GitService.class, new DefaultCommitRefiner(), new DefaultCommitMessageFormatter());
 
-    public static final MigrationConfig Default = new MigrationConfig("trunk",GitService.class, new DefaultCommitRefiner(), new DefaultCommitMessageFormatter());
-
-
+    private Class<? extends SourceControlService> destinationRepositoryType;
+    private String sourcesDirectory;
+    private CommitRefiner commitRefiner;
+    private CommitMessageFormatter CommitMessageFormatter;
+    private SCId lastCommitedId = SCId.FIRST_GIT_COMMIT;
+    private String username = null;
+    private String password = null;
+    private MigrationStrategy migrationStrategy = new SafeMigrationStrategy();
+    private PreCommitAction preCommitAction = new Log();
 
     public MigrationConfig() {
         this.username = null;
         this.password = null;
     }
-
-    
 
     public String getPassword() {
         return password;
@@ -42,16 +47,6 @@ public class MigrationConfig {
         this.username = username;
     }
 
-    
-    private Class<? extends SourceControlService> destinationRepositoryType;
-    private String sourcesDirectory;
-    private CommitRefiner commitRefiner;
-    private CommitMessageFormatter CommitMessageFormatter;
-    private SCId lastCommitedId = SCId.FIRST_GIT_COMMIT;
-    private String username = null;
-    private String password = null;
-    private MigrationStrategy migrationStrategy = new SafeMigrationStrategy();
-    private PreCommitAction preCommitAction = new Log();
     private boolean forceClean = false;
 
     public String getSourcesDirectory() {
@@ -78,24 +73,24 @@ public class MigrationConfig {
         CommitMessageFormatter = commitMessageFormatter;
     }
 
-    public MigrationConfig(String sourcesDirectory,Class<? extends SourceControlService> destinationType
-            , CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
+    public MigrationConfig(String sourcesDirectory, Class<? extends SourceControlService> destinationType,
+             CommitRefiner commitRefiner, CommitMessageFormatter CommitMessageFormatter) {
         this.destinationRepositoryType = destinationType;
         this.sourcesDirectory = sourcesDirectory;
         this.commitRefiner = commitRefiner;
         this.CommitMessageFormatter = CommitMessageFormatter;
     }
 
-
-    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat, Class<? extends SourceControlService> destination){
-        return new MigrationConfig("trunk", destination, new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
+    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat, Class<? extends SourceControlService> destination) {
+        return new MigrationConfig("trunk", destination, new DefaultCommitRefiner(), new StringCommitMessageFormatter(commitMessageFormat));
     }
 
-    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat){
-        return new MigrationConfig("trunk", GitService.class, new DefaultCommitRefiner(),new StringCommitMessageFormatter(commitMessageFormat));
+    public static MigrationConfig formatedMigrationConfig(String commitMessageFormat) {
+        return new MigrationConfig("trunk", GitService.class, new DefaultCommitRefiner(), new StringCommitMessageFormatter(commitMessageFormat));
     }
-	public SCId getLastCommitedId() {
-		return this.lastCommitedId;
+
+    public SCId getLastCommitedId() {
+        return this.lastCommitedId;
     }
 
     public void setLastCommitedId(SCId lastCommitedId) {
@@ -133,5 +128,5 @@ public class MigrationConfig {
     public void setPreCommitAction(PreCommitAction preCommitAction) {
         this.preCommitAction = preCommitAction;
     }
-    
+
 }
