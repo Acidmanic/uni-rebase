@@ -5,6 +5,8 @@
  */
 package com.acidmanic.utility.unirebase.plugins;
 
+import com.acidmanic.utility.unirebase.services.DirectoryReference;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -19,7 +21,15 @@ public class UniRebasePluginProfile implements PluginProfile{
     private final BasicPluginProfile pluginProfile;
     
     private UniRebasePluginProfile(){
-        this.pluginProfile = new BasicPluginProfile("plugins");
+        
+        File executionDirectory = new DirectoryReference().executionDirectory();
+        
+        File pluginsDirectory =  executionDirectory.toPath().resolve("plugins").toFile();
+        
+        pluginsDirectory.mkdirs();
+        
+        this.pluginProfile = new BasicPluginProfile(pluginsDirectory);
+        
     }
     
     public static synchronized UniRebasePluginProfile makeInstance(){
