@@ -134,7 +134,6 @@ public class Git2Git extends CommandBase {
         try {
             action = UniRebasePluginProfile.makeInstance().makeObject(actionName);
         } catch (Exception ex) {
-            Logger.getLogger(Git2Git.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         if(action!=null){
